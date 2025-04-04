@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/03 11:13:31 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/04 17:47:24 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int	input(int ac, char **av, t_table *table)
 		i++;
 	}
 	table->philos_number = ft_atoi(av[1], &error);
-	table->time_to_die = ft_atoi(av[2], &error);
-	table->eat_time = ft_atoi(av[3], &error);
-	table->sleep_time = ft_atoi(av[4], &error);
-	table->meals_limit = -1;
+	table->philosophers->time_to_die = ft_atoi(av[2], &error);
+	table->philosophers->eat_time = ft_atoi(av[3], &error);
+	table->philosophers->sleep_time = ft_atoi(av[4], &error);
+	table->philosophers->meals_limit = -1;
 	if (ac == 6)
-		table->meals_limit = ft_atoi(av[5], &error);
+		table->philosophers->meals_limit = ft_atoi(av[5], &error);
 	return (0);
 }
