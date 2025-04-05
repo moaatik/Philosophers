@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 12:16:07 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 18:36:54 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct	s_table
 	int				meals_limit;
 	pthread_mutex_t	*forks;
 	t_philosopher	*philosophers;
+	int				end_dinner;
+	pthread_mutex_t	print_mutex;
 }	t_table;
 
 

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 13:34:36 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 18:42:42 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ long get_time(void)
     return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
+void	safe_print(t_philosopher *philosopher, char *msg)
+{
+	pthread_mutex_lock(&philosopher->table->print_mutex);
+	if (!philosopher->table->end_dinner)
+		printf("%ld %d %s\n", get_time(), philosopher->id, msg);
+	pthread_mutex_unlock(&philosopher->table->print_mutex);
+}
+
 void	*philosopher_routine(void *argement)
 {
 	t_philosopher	*philosopher;
@@ -27,39 +35,36 @@ void	*philosopher_routine(void *argement)
 	philosopher = (t_philosopher *)argement;
 	while (1)
 	{
+		if (philosopher->table->end_dinner)
+			return (NULL);
 		if (get_time() - philosopher->last_meal_date > philosopher->table->time_to_die)
 		{
-			pthread_mutex_unlock(philosopher->left_fork);
-			pthread_mutex_unlock(philosopher->right_fork);
-			printf("%ld : Philosopher %d died\n", get_time(), philosopher->id);
-			break ;
+			printf("%ld %d died\n", get_time(), philosopher->id);
+			philosopher->table->end_dinner = 1;
+			return (NULL);
 		}
 		
 		if (philosopher->id % 2 == 0)
-			usleep(100);
+			usleep(50);
 		
 		pthread_mutex_lock(philosopher->left_fork);
-		printf("%ld : Philosopher %d has taken his left fork\n", get_time(), philosopher->id);
+		safe_print(philosopher, "has taken a fork");
 		pthread_mutex_lock(philosopher->right_fork);
-		printf("%ld : Philosopher %d has taken his right fork\n", get_time(), philosopher->id);
+		safe_print(philosopher, "has taken a fork");
 
-		printf("%ld : Philosopher %d is eating\n", get_time(), philosopher->id);
+		safe_print(philosopher, "is eating");
 		philosopher->last_meal_date = get_time();
 		philosopher->meals_eaten++;
-		//printf("====Philosopher %d have eates %d meals=====\n", philosopher->id, philosopher->meals_eaten);
 		usleep(1000 * philosopher->table->eat_time);
 		
 		pthread_mutex_unlock(philosopher->left_fork);
-		//printf("%ld : Philosopher %d has put down his left fork\n", get_time(), philosopher->id);
 		pthread_mutex_unlock(philosopher->right_fork);
-		//printf("%ld : Philosopher %d has put down his right fork\n", get_time(), philosopher->id);
 		
-		printf("%ld : Philosopher %d is sleeping\n", get_time(), philosopher->id);
+		safe_print(philosopher, "is sleeping");
 		usleep(1000 * philosopher->table->sleep_time);
 		
-		printf("%ld : Philosopher %d is thinking\n", get_time(), philosopher->id);
+		safe_print(philosopher, "is thinking");
 		usleep(1000 * philosopher->table->think_time);
-		
 	}
 	return (NULL);
 }
