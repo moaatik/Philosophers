@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 11:13:12 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 12:16:07 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct	s_philosopher
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
 	int					meals_eaten;
-	int					last_meal_date;
+	long long			last_meal_date;
 	t_table				*table;
 }	t_philosopher;
 
