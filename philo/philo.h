@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/04 17:47:53 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 11:13:12 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdio.h>
+# include <sys/time.h>
+
+typedef	struct s_table t_table;
 
 typedef struct	s_philosopher
 {
@@ -25,17 +28,17 @@ typedef struct	s_philosopher
 	pthread_mutex_t		*right_fork;
 	int					meals_eaten;
 	int					last_meal_date;
-	int					eat_time;
-	int					sleep_time;
-	int					think_time;
-	int					time_to_die;
-	int					meals_limit;
-	
+	t_table				*table;
 }	t_philosopher;
 
 typedef struct	s_table
 {
 	int				philos_number;
+	int				eat_time;
+	int				sleep_time;
+	int				think_time;
+	int				time_to_die;
+	int				meals_limit;
 	pthread_mutex_t	*forks;
 	t_philosopher	*philosophers;
 }	t_table;

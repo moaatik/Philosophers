@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/04 17:56:09 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 10:23:10 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	init_forks(t_table *table)
 		i++;
 	}
 	table->forks = forks;
-	retrun (0);
+	return (0);
 }
 
 int	init_philosophers(t_table *table)
@@ -35,22 +35,23 @@ int	init_philosophers(t_table *table)
 	int				i;
 	t_philosopher	*philosophers;
 
-	i = 1;
+	i = 0;
 	philosophers = malloc(sizeof(t_philosopher) * table->philos_number);
 	if (!philosophers)
 		return 1;
 	table->philosophers = philosophers;
-	while (i <= table->philos_number)
+	while (i < table->philos_number)
 	{
-		table->philosophers->id = i;
-		table->philosophers->last_meal_date = 0;
-		table->philosophers->meals_eaten = 0;
-		table->philosophers->left_fork = &table->forks[i - 1];
-		if (i == 1)
-			table->philosophers->right_fork = &table->forks[table->philos_number - 1];
+		philosophers[i].id = i + 1;
+		philosophers[i].last_meal_date = 0;
+		philosophers[i].meals_eaten = 0;
+		philosophers[i].left_fork = &table->forks[i];
+		if (i == 0)
+			philosophers[i].right_fork = &table->forks[table->philos_number - 1];
 		else
-			table->philosophers->right_fork = &table->forks[i - 2];
+			philosophers[i].right_fork = &table->forks[i - 1];
+		philosophers[i].table = table;
+		i++;
 	}
 	return (0);
 }
-		

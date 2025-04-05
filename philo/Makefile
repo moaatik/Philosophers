@@ -1,4 +1,4 @@
-SRCS = philo.c
+SRCS = philo.c parsing.c init.c utils.c
 
 OBJS = $(SRCS:.c=.o)
 
