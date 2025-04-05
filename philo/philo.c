@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 18:42:42 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/05 19:20:29 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,9 @@ void	*philosopher_routine(void *argement)
 			philosopher->table->end_dinner = 1;
 			return (NULL);
 		}
-		
 		if (philosopher->id % 2 == 0)
 			usleep(50);
-		
+
 		pthread_mutex_lock(philosopher->left_fork);
 		safe_print(philosopher, "has taken a fork");
 		pthread_mutex_lock(philosopher->right_fork);
