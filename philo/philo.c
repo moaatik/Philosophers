@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/06 12:02:47 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/06 19:42:13 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	safe_print(t_philosopher *philosopher, char *msg)
 	pthread_mutex_unlock(&philosopher->table->print_mutex);
 }
 
-void	*philosopher_routine(void *argement)
+void	*philosopher_day(void *argement)
 {
 	t_philosopher	*philosopher;
 
@@ -55,7 +55,7 @@ void	*philosopher_routine(void *argement)
 		if (get_end_dinner(philosopher->table))
 			return (NULL);
 
-		if (get_time() - philosopher->last_meal_date > philosopher->table->time_to_die || philosopher->table->philos_number < 2)
+		if (get_time() - philosopher->last_meal_date >= philosopher->table->time_to_die || philosopher->table->philos_number < 2)
 		{
 			pthread_mutex_lock(&philosopher->table->print_mutex);
 			if (!get_end_dinner(philosopher->table))
@@ -88,9 +88,19 @@ void	*philosopher_routine(void *argement)
 
 		safe_print(philosopher, "is sleeping");
 		usleep(1000 * philosopher->table->sleep_time);
+
+		
+		// philosopher->think_time = (philosopher->table->time_to_die - (get_time() - philosopher->last_meal_date)) / 2;
+		// if (philosopher->think_time < 0)
+		// 	philosopher->think_time = 0;
+		// if (philosopher->think_time > 600)
+		// 	philosopher->think_time = 200;
+
 		
 		safe_print(philosopher, "is thinking");
-		usleep(1000 * philosopher->table->think_time);
+		// printf("====think time : %d\n", philosopher->think_time);
+		// usleep(1000 * philosopher->think_time);
+		usleep(100);
 	}
 	return (NULL);
 }
@@ -106,7 +116,7 @@ int	dinner_time(t_table *table)
 		return (1);
 	while (i < table->philos_number)
 	{
-		if (pthread_create(&threads[i], NULL, philosopher_routine, &table->philosophers[i]))
+		if (pthread_create(&threads[i], NULL, philosopher_day, &table->philosophers[i]))
 			return (free(threads), 1);
 		table->philosophers[i].last_meal_date = get_time();
 		i++;
