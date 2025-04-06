@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 18:36:54 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/06 09:30:21 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct	s_table
 	t_philosopher	*philosophers;
 	int				end_dinner;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	end_mutex;
 }	t_table;
 
 

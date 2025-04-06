@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/05 19:20:29 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/06 10:02:27 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,27 @@ long get_time(void)
     return (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
+int	get_end_dinner(t_table *table)
+{
+	int	status;
+
+	pthread_mutex_lock(&table->end_mutex);
+	status = table->end_dinner;
+	pthread_mutex_unlock(&table->end_mutex);
+	return (status);
+}
+
+void	set_end_dinner(t_table *table, int value)
+{
+	pthread_mutex_lock(&table->end_mutex);
+	table->end_dinner = value;
+	pthread_mutex_unlock(&table->end_mutex);
+}
+
 void	safe_print(t_philosopher *philosopher, char *msg)
 {
 	pthread_mutex_lock(&philosopher->table->print_mutex);
-	if (!philosopher->table->end_dinner)
+	if (!get_end_dinner(philosopher->table))
 		printf("%ld %d %s\n", get_time(), philosopher->id, msg);
 	pthread_mutex_unlock(&philosopher->table->print_mutex);
 }
@@ -35,16 +52,23 @@ void	*philosopher_routine(void *argement)
 	philosopher = (t_philosopher *)argement;
 	while (1)
 	{
-		if (philosopher->table->end_dinner)
+		if (get_end_dinner(philosopher->table))
 			return (NULL);
+
 		if (get_time() - philosopher->last_meal_date > philosopher->table->time_to_die)
 		{
-			printf("%ld %d died\n", get_time(), philosopher->id);
-			philosopher->table->end_dinner = 1;
+			pthread_mutex_lock(&philosopher->table->print_mutex);
+			if (!get_end_dinner(philosopher->table))
+			{
+				set_end_dinner(philosopher->table, 1);
+				printf("%ld %d died\n", get_time(), philosopher->id);
+			}
+			pthread_mutex_unlock(&philosopher->table->print_mutex);
 			return (NULL);
 		}
+
 		if (philosopher->id % 2 == 0)
-			usleep(50);
+			usleep(100);
 
 		pthread_mutex_lock(philosopher->left_fork);
 		safe_print(philosopher, "has taken a fork");
