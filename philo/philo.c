@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/06 10:02:27 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/06 12:02:47 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	*philosopher_routine(void *argement)
 		if (get_end_dinner(philosopher->table))
 			return (NULL);
 
-		if (get_time() - philosopher->last_meal_date > philosopher->table->time_to_die)
+		if (get_time() - philosopher->last_meal_date > philosopher->table->time_to_die || philosopher->table->philos_number < 2)
 		{
 			pthread_mutex_lock(&philosopher->table->print_mutex);
 			if (!get_end_dinner(philosopher->table))
@@ -83,6 +83,9 @@ void	*philosopher_routine(void *argement)
 		pthread_mutex_unlock(philosopher->left_fork);
 		pthread_mutex_unlock(philosopher->right_fork);
 		
+		if (philosopher->meals_eaten == philosopher->table->meals_limit)
+			return (NULL);
+
 		safe_print(philosopher, "is sleeping");
 		usleep(1000 * philosopher->table->sleep_time);
 		
