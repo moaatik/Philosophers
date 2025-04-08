@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/06 19:42:13 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/08 13:30:46 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,33 @@ void	safe_print(t_philosopher *philosopher, char *msg)
 void	*philosopher_day(void *argement)
 {
 	t_philosopher	*philosopher;
+	pthread_mutex_t	*first;
+	pthread_mutex_t	*second;
 
 	philosopher = (t_philosopher *)argement;
+	first = philosopher->left_fork;
+	second = philosopher->right_fork;
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table))
 			return (NULL);
 
-		if (get_time() - philosopher->last_meal_date >= philosopher->table->time_to_die || philosopher->table->philos_number < 2)
-		{
-			pthread_mutex_lock(&philosopher->table->print_mutex);
-			if (!get_end_dinner(philosopher->table))
-			{
-				set_end_dinner(philosopher->table, 1);
-				printf("%ld %d died\n", get_time(), philosopher->id);
-			}
-			pthread_mutex_unlock(&philosopher->table->print_mutex);
-			return (NULL);
-		}
-
 		if (philosopher->id % 2 == 0)
 			usleep(100);
 
-		pthread_mutex_lock(philosopher->left_fork);
+		if (first > second)
+		{
+			first = philosopher->right_fork;
+			second = philosopher->left_fork;
+		}
+
+		// pthread_mutex_lock(philosopher->left_fork);
+		pthread_mutex_lock(first);
 		safe_print(philosopher, "has taken a fork");
-		pthread_mutex_lock(philosopher->right_fork);
+		if (!philosopher->right_fork)
+			return (NULL);
+		// pthread_mutex_lock(philosopher->right_fork);
+		pthread_mutex_lock(second);
 		safe_print(philosopher, "has taken a fork");
 
 		safe_print(philosopher, "is eating");
@@ -90,17 +92,44 @@ void	*philosopher_day(void *argement)
 		usleep(1000 * philosopher->table->sleep_time);
 
 		
-		// philosopher->think_time = (philosopher->table->time_to_die - (get_time() - philosopher->last_meal_date)) / 2;
-		// if (philosopher->think_time < 0)
-		// 	philosopher->think_time = 0;
-		// if (philosopher->think_time > 600)
-		// 	philosopher->think_time = 200;
+		philosopher->think_time = (philosopher->table->time_to_die - (get_time() - philosopher->last_meal_date)) / 2;
+		if (philosopher->think_time < 0)
+			philosopher->think_time = 0;
+		if (philosopher->think_time > 600)
+			philosopher->think_time = 200;
 
 		
 		safe_print(philosopher, "is thinking");
-		// printf("====think time : %d\n", philosopher->think_time);
-		// usleep(1000 * philosopher->think_time);
-		usleep(100);
+		usleep(1000 * philosopher->think_time);
+	}
+	return (NULL);
+}
+
+void	*monitoring(void *argement)
+{
+	t_table	*table;
+	int		i;
+
+	table = (t_table *)argement;
+	while (1)
+	{
+		i = 0;
+		while (i < table->philos_number)
+		{
+			if (get_time() - table->philosophers[i].last_meal_date >= table->time_to_die)
+			{
+				pthread_mutex_lock(&table->print_mutex);
+				if (!get_end_dinner(table))
+				{
+					set_end_dinner(table, 1);
+					printf("%ld %d died\n", get_time(), table->philosophers[i].id);
+				}
+				pthread_mutex_unlock(&table->print_mutex);
+				return (NULL);
+			}
+			i++;
+		}
+		usleep(1000);
 	}
 	return (NULL);
 }
@@ -111,18 +140,20 @@ int	dinner_time(t_table *table)
 	int			i;
 
 	i = 0;
-	threads = malloc(sizeof(pthread_t) * table->philos_number);
+	threads = malloc(sizeof(pthread_t) * (table->philos_number + 1));
 	if (!threads)
 		return (1);
 	while (i < table->philos_number)
 	{
+		table->philosophers[i].last_meal_date = get_time();
 		if (pthread_create(&threads[i], NULL, philosopher_day, &table->philosophers[i]))
 			return (free(threads), 1);
-		table->philosophers[i].last_meal_date = get_time();
 		i++;
 	}
+	if (pthread_create(&threads[i], NULL, monitoring, table))
+			return (free(threads), 1);
 	i = 0;
-	while (i < table->philos_number)
+	while (i <= table->philos_number)
 	{
 		pthread_join(threads[i], NULL);
 		i++;

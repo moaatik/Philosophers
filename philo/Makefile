@@ -9,7 +9,7 @@ NAME = philo
 
 all: $(NAME)
 
-mandatory/%.o: %.c philo.h
+%.o: %.c philo.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
