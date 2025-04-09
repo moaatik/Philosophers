@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/08 13:30:46 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/09 14:47:02 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,26 @@
 
 long get_time(void)
 {
+    //static long	start_time = 0;
     struct timeval	time;
+    long	current_time;
 
     gettimeofday(&time, NULL);
-    return (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    //if (start_time == 0)
+    //    start_time = current_time;
+    //return (current_time - start_time);
+    return (current_time);
 }
 
+void	ft_usleep(long ms)
+{
+	long	start;
+
+	start = get_time();
+	while ((get_time() - start) < ms)
+		usleep(100);
+}
 int	get_end_dinner(t_table *table)
 {
 	int	status;
@@ -60,7 +74,7 @@ void	*philosopher_day(void *argement)
 			return (NULL);
 
 		if (philosopher->id % 2 == 0)
-			usleep(100);
+			ft_usleep(1);
 
 		if (first > second)
 		{
@@ -80,7 +94,7 @@ void	*philosopher_day(void *argement)
 		safe_print(philosopher, "is eating");
 		philosopher->last_meal_date = get_time();
 		philosopher->meals_eaten++;
-		usleep(1000 * philosopher->table->eat_time);
+		ft_usleep(philosopher->table->eat_time);
 		
 		pthread_mutex_unlock(philosopher->left_fork);
 		pthread_mutex_unlock(philosopher->right_fork);
@@ -89,7 +103,7 @@ void	*philosopher_day(void *argement)
 			return (NULL);
 
 		safe_print(philosopher, "is sleeping");
-		usleep(1000 * philosopher->table->sleep_time);
+		ft_usleep(philosopher->table->sleep_time);
 
 		
 		philosopher->think_time = (philosopher->table->time_to_die - (get_time() - philosopher->last_meal_date)) / 2;
@@ -100,7 +114,7 @@ void	*philosopher_day(void *argement)
 
 		
 		safe_print(philosopher, "is thinking");
-		usleep(1000 * philosopher->think_time);
+		ft_usleep(philosopher->think_time);
 	}
 	return (NULL);
 }
@@ -116,7 +130,7 @@ void	*monitoring(void *argement)
 		i = 0;
 		while (i < table->philos_number)
 		{
-			if (get_time() - table->philosophers[i].last_meal_date >= table->time_to_die)
+			if (get_time() - table->philosophers[i].last_meal_date > table->time_to_die)
 			{
 				pthread_mutex_lock(&table->print_mutex);
 				if (!get_end_dinner(table))
@@ -129,7 +143,7 @@ void	*monitoring(void *argement)
 			}
 			i++;
 		}
-		usleep(1000);
+		ft_usleep(1000);
 	}
 	return (NULL);
 }
