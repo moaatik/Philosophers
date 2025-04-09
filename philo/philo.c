@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/09 14:47:02 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/09 19:39:56 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,8 @@ void	safe_print(t_philosopher *philosopher, char *msg)
 void	*philosopher_day(void *argement)
 {
 	t_philosopher	*philosopher;
-	pthread_mutex_t	*first;
-	pthread_mutex_t	*second;
 
 	philosopher = (t_philosopher *)argement;
-	first = philosopher->left_fork;
-	second = philosopher->right_fork;
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table))
@@ -76,19 +72,11 @@ void	*philosopher_day(void *argement)
 		if (philosopher->id % 2 == 0)
 			ft_usleep(1);
 
-		if (first > second)
-		{
-			first = philosopher->right_fork;
-			second = philosopher->left_fork;
-		}
-
-		// pthread_mutex_lock(philosopher->left_fork);
-		pthread_mutex_lock(first);
+		pthread_mutex_lock(philosopher->left_fork);
 		safe_print(philosopher, "has taken a fork");
 		if (!philosopher->right_fork)
 			return (NULL);
-		// pthread_mutex_lock(philosopher->right_fork);
-		pthread_mutex_lock(second);
+		pthread_mutex_lock(philosopher->right_fork);
 		safe_print(philosopher, "has taken a fork");
 
 		safe_print(philosopher, "is eating");
