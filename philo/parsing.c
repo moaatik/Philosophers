@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/07 21:02:46 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/11 15:27:02 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	input(int ac, char **av, t_table *table)
 	if (ac == 6)
 		table->meals_limit = ft_atoi(av[5], &error);
 	table->end_dinner = 0;
+	table->philos_done_eating = 0;
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->end_mutex, NULL);
 	return (0);
