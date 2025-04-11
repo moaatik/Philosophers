@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/09 19:39:56 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/09 20:04:25 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 long get_time(void)
 {
-    //static long	start_time = 0;
+    static long	start_time;
     struct timeval	time;
     long	current_time;
 
     gettimeofday(&time, NULL);
     current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-    //if (start_time == 0)
-    //    start_time = current_time;
-    //return (current_time - start_time);
+    if (start_time == 0)
+       start_time = current_time;
+    return (current_time - start_time);
     return (current_time);
 }
 
