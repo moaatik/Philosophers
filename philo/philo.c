@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/11 15:57:56 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/11 16:54:29 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ int	main(int argc, char **argv)
 	t_table	table;
 
 	if (input(argc, argv, &table) || init_forks(&table) \
-	|| init_philosophers(&table) || dinner_time(&table))
+	|| init_philosophers(&table))
 		return (1);
+	if (dinner_time(&table))
+		return (1);
+	clean_up(&table);
 }

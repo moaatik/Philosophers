@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:00:54 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/11 16:01:25 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/11 16:47:12 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,17 @@ long	ft_atoi(const char *str, int *error)
 		i++;
 	}
 	return (result * sign);
+}
+
+void	clean_up(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->philos_number)
+		pthread_mutex_destroy(&table->forks[i++]);
+	pthread_mutex_destroy(&table->end_mutex);
+	pthread_mutex_destroy(&table->print_mutex);
+	free(table->forks);
+	free(table->philosophers);
 }
