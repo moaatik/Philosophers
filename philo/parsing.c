@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/11 15:27:02 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/04/11 16:14:30 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ int	input(int ac, char **av, t_table *table)
 
 	i = 1;
 	if (ac != 5 && ac != 6)
-		return (write(2, "Error\nUsage Example: ./philo philosophers_number time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
+		return (write(2, "Error\nUsage Example: ./philo philosophers_number \
+time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 	while (av[i])
 	{
 		error = 0;
-		if (ft_atoi(av[i], &error) <= 0 || error)
-			return (1);
-		i++;
+		if (ft_atoi(av[i++], &error) <= 0 || error)
+			return (write(2, "Error\nYou have entered an invalid argument\n", 43), 1);
 	}
 	table->philos_number = ft_atoi(av[1], &error);
 	table->time_to_die = ft_atoi(av[2], &error);
