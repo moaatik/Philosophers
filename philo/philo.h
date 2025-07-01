@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/11 16:45:12 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/01 20:35:15 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		init_philosophers(t_table *table);
 int		input(int ac, char **av, t_table *table);
 
 long	get_time(void);
-void	ft_usleep(long ms);
+void	ft_usleep(long ms, t_philosopher *philosopher);
 int		get_end_dinner(t_table *table);
 void	set_end_dinner(t_table *table, int value);
 void	safe_print(t_philosopher *philosopher, char *msg);

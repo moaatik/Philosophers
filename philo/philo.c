@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/04/11 16:54:29 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/01 20:34:18 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	eating(t_philosopher *philosopher)
 	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
-	ft_usleep(philosopher->table->eat_time);
+	ft_usleep(philosopher->table->eat_time, philosopher);
 	pthread_mutex_unlock(philosopher->left_fork);
 	pthread_mutex_unlock(philosopher->right_fork);
 }
@@ -36,14 +36,14 @@ void	*philosopher_day(void *argement)
 		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
 			return (NULL);
 		if (philosopher->id % 2 == 0)
-			ft_usleep(1);
+			ft_usleep(1, philosopher);
 		eating(philosopher);
 		if (philosopher->meals_eaten == philosopher->table->meals_limit)
 			return (philosopher->table->philos_done_eating++, NULL);
 		safe_print(philosopher, "is sleeping");
-		ft_usleep(philosopher->table->sleep_time);
+		ft_usleep(philosopher->table->sleep_time, philosopher);
 		safe_print(philosopher, "is thinking");
-		ft_usleep(1);
+		ft_usleep(1, philosopher);
 	}
 	return (NULL);
 }
@@ -68,7 +68,7 @@ void	*monitoring(void *argement)
 					set_end_dinner(table, 1), NULL);
 			i++;
 		}
-		ft_usleep(1);
+		ft_usleep(1, &table->philosophers[0]);
 	}
 	return (NULL);
 }
