@@ -44,7 +44,6 @@ void	*philosopher_day(void *argement)
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time, philosopher);
 		safe_print(philosopher, "is thinking");
-		ft_usleep(1, philosopher);
 	}
 	return (NULL);
 }
@@ -65,11 +64,10 @@ void	*monitoring(void *argement)
 			if (get_time() - table->philosophers[i].last_meal_date >= \
 				table->time_to_die && table->philosophers[i].meals_eaten \
 				!= table->meals_limit)
-				return (safe_print(&table->philosophers[i], "died"), \
-					set_end_dinner(table, 1), NULL);
+				return (set_end_dinner(table, 1), printf("%ld %d %s\n", \
+				get_time(), table->philosophers[i].id, "died"), NULL);
 			i++;
 		}
-		ft_usleep(1, &table->philosophers[0]);
 	}
 	return (NULL);
 }
