@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-int	init_forks(t_table *table)
+int	init_mutexes(t_table *table)
 {
 	pthread_mutex_t	*forks;
 	int				i;
@@ -27,6 +27,9 @@ int	init_forks(t_table *table)
 		i++;
 	}
 	table->forks = forks;
+	pthread_mutex_init(&table->print_mutex, NULL);
+	pthread_mutex_init(&table->end_mutex, NULL);
+	pthread_mutex_init(&table->start_mutex, NULL);
 	return (0);
 }
 

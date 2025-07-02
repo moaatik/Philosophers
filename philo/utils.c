@@ -12,6 +12,34 @@
 
 #include "philo.h"
 
+long	ft_atoi(const char *str, int *error)
+{
+	int		i;
+	int		sign;
+	long	result;
+
+	i = 0;
+	sign = 1;
+	*error = 0;
+	result = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i] - '0');
+		if (result * sign > 2147483647 || result * sign < -2147483648)
+			return (*error = 1, result * sign);
+		i++;
+	}
+	return (result * sign);
+}
+
 long	get_time(void)
 {
 	static long		start_time;
@@ -34,27 +62,16 @@ void	ft_usleep(long ms, t_philosopher *philosopher)
 		usleep(100);
 }
 
-int	get_end_dinner(t_table *table)
+void	clean_up(t_table *table)
 {
-	int	status;
+	int	i;
 
-	pthread_mutex_lock(&table->end_mutex);
-	status = table->end_dinner;
-	pthread_mutex_unlock(&table->end_mutex);
-	return (status);
-}
-
-void	set_end_dinner(t_table *table, int value)
-{
-	pthread_mutex_lock(&table->end_mutex);
-	table->end_dinner = value;
-	pthread_mutex_unlock(&table->end_mutex);
-}
-
-void	safe_print(t_philosopher *philosopher, char *msg)
-{
-	pthread_mutex_lock(&philosopher->table->print_mutex);
-	if (!get_end_dinner(philosopher->table))
-		printf("%ld %d %s\n", get_time(), philosopher->id, msg);
-	pthread_mutex_unlock(&philosopher->table->print_mutex);
+	i = 0;
+	while (i < table->philos_number)
+		pthread_mutex_destroy(&table->forks[i++]);
+	pthread_mutex_destroy(&table->end_mutex);
+	pthread_mutex_destroy(&table->start_mutex);
+	pthread_mutex_destroy(&table->print_mutex);
+	free(table->forks);
+	free(table->philosophers);
 }

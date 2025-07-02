@@ -36,7 +36,5 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 		table->meals_limit = ft_atoi(av[5], &error);
 	table->end_dinner = 0;
 	table->philos_done_eating = 0;
-	pthread_mutex_init(&table->print_mutex, NULL);
-	pthread_mutex_init(&table->end_mutex, NULL);
 	return (0);
 }

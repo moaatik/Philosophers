@@ -14,10 +14,20 @@
 
 void	eating(t_philosopher *philosopher)
 {
-	pthread_mutex_lock(philosopher->left_fork);
-	safe_print(philosopher, "has taken a fork");
-	pthread_mutex_lock(philosopher->right_fork);
-	safe_print(philosopher, "has taken a fork");
+	if (philosopher->id % 2 == 0)
+	{
+		pthread_mutex_lock(philosopher->right_fork);
+		safe_print(philosopher, "has taken a fork");
+		pthread_mutex_lock(philosopher->left_fork);
+		safe_print(philosopher, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(philosopher->left_fork);
+		safe_print(philosopher, "has taken a fork");
+		pthread_mutex_lock(philosopher->right_fork);
+		safe_print(philosopher, "has taken a fork");
+	}
 	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
@@ -31,6 +41,8 @@ void	*philosopher_day(void *argement)
 	t_philosopher	*philosopher;
 
 	philosopher = (t_philosopher *)argement;
+	while (!get_start_dinner(philosopher->table))
+		ft_usleep(1, philosopher);
 	philosopher->last_meal_date = get_time();
 	while (1)
 	{
@@ -72,15 +84,15 @@ void	*monitoring(void *argement)
 	return (NULL);
 }
 
-int	dinner_time(t_table *table)
+int	dinner_time(t_table *table, int i)
 {
 	pthread_t	*threads;
-	int			i;
 
 	i = 0;
 	threads = malloc(sizeof(pthread_t) * (table->philos_number + 1));
 	if (!threads)
 		return (1);
+	set_start_dinner(table, 0);
 	while (i < table->philos_number)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher_day, \
@@ -88,6 +100,7 @@ int	dinner_time(t_table *table)
 			return (free(threads), 1);
 		i++;
 	}
+	set_start_dinner(table, 1);
 	if (pthread_create(&threads[i], NULL, monitoring, table))
 		return (free(threads), 1);
 	i = 0;
@@ -104,10 +117,9 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 
-	if (input(argc, argv, &table) || init_forks(&table) \
+	if (input(argc, argv, &table) || init_mutexes(&table) \
 	|| init_philosophers(&table))
 		return (1);
-	if (dinner_time(&table))
-		return (1);
+	dinner_time(&table, 0);
 	clean_up(&table);
 }
