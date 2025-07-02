@@ -31,6 +31,7 @@ void	*philosopher_day(void *argement)
 	t_philosopher	*philosopher;
 
 	philosopher = (t_philosopher *)argement;
+	philosopher->last_meal_date = get_time();
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
@@ -84,7 +85,6 @@ int	dinner_time(t_table *table)
 		return (1);
 	while (i < table->philos_number)
 	{
-		table->philosophers[i].last_meal_date = get_time();
 		if (pthread_create(&threads[i], NULL, philosopher_day, \
 			&table->philosophers[i]))
 			return (free(threads), 1);
