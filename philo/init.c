@@ -23,13 +23,15 @@ int	init_mutexes(t_table *table)
 		return (1);
 	while (i < table->philos_number)
 	{
-		pthread_mutex_init(&forks[i], NULL);
+		if (pthread_mutex_init(&forks[i], NULL) != 0)
+			return (1);
 		i++;
 	}
 	table->forks = forks;
-	pthread_mutex_init(&table->print_mutex, NULL);
-	pthread_mutex_init(&table->end_mutex, NULL);
-	pthread_mutex_init(&table->start_mutex, NULL);
+	if (pthread_mutex_init(&table->print_mutex, NULL) != 0
+		|| pthread_mutex_init(&table->end_mutex, NULL) != 0
+		|| pthread_mutex_init(&table->start_mutex, NULL) != 0)
+		return (1);
 	return (0);
 }
 

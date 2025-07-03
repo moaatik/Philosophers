@@ -42,7 +42,7 @@ void	*philosopher_day(void *argement)
 
 	philosopher = (t_philosopher *)argement;
 	while (!get_start_dinner(philosopher->table))
-		ft_usleep(1, philosopher);
+		usleep(1);
 	philosopher->last_meal_date = get_time();
 	while (1)
 	{
@@ -84,9 +84,10 @@ void	*monitoring(void *argement)
 	return (NULL);
 }
 
-int	dinner_time(t_table *table, int i)
+int	dinner_time(t_table *table)
 {
 	pthread_t	*threads;
+	int			i;
 
 	i = 0;
 	threads = malloc(sizeof(pthread_t) * (table->philos_number + 1));
@@ -97,19 +98,13 @@ int	dinner_time(t_table *table, int i)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher_day, \
 			&table->philosophers[i]))
-			return (free(threads), 1);
+			return (join_threads(threads, i), 1);
 		i++;
 	}
-	set_start_dinner(table, 1);
 	if (pthread_create(&threads[i], NULL, monitoring, table))
-		return (free(threads), 1);
-	i = 0;
-	while (i <= table->philos_number)
-	{
-		pthread_join(threads[i], NULL);
-		i++;
-	}
-	free(threads);
+		return (join_threads(threads, i), 1);
+	set_start_dinner(table, 1);
+	join_threads(threads, i);
 	return (0);
 }
 
@@ -117,9 +112,10 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 
-	if (input(argc, argv, &table) || init_mutexes(&table) \
-	|| init_philosophers(&table))
+	if (input(argc, argv, &table))
 		return (1);
-	dinner_time(&table, 0);
+	if (init_mutexes(&table) || init_philosophers(&table))
+		return (clean_up(&table), 1);
+	dinner_time(&table);
 	clean_up(&table);
 }

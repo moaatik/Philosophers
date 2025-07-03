@@ -58,6 +58,7 @@ int		input(int ac, char **av, t_table *table);
 long	get_time(void);
 int		get_end_dinner(t_table *table);
 int		get_start_dinner(t_table *table);
+void	join_threads(pthread_t	*threads, int i);
 void	set_end_dinner(t_table *table, int value);
 void	set_start_dinner(t_table *table, int value);
 void	ft_usleep(long ms, t_philosopher *philosopher);

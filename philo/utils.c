@@ -62,6 +62,19 @@ void	ft_usleep(long ms, t_philosopher *philosopher)
 		usleep(100);
 }
 
+void	join_threads(pthread_t	*threads, int i)
+{
+	int	j;
+
+	j = 0;
+	while (j <= i)
+	{
+		pthread_join(threads[j], NULL);
+		j++;
+	}
+	free(threads);
+}
+
 void	clean_up(t_table *table)
 {
 	int	i;

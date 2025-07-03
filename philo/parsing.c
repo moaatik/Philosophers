@@ -36,5 +36,6 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 		table->meals_limit = ft_atoi(av[5], &error);
 	table->end_dinner = 0;
 	table->philos_done_eating = 0;
+	table->philosophers = NULL;
 	return (0);
 }
