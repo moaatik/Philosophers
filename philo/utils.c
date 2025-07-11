@@ -80,7 +80,7 @@ void	clean_up(t_table *table)
 	int	i;
 
 	i = 0;
-	while (i < table->philos_number)
+	while (table->forks && i < table->philos_number)
 		pthread_mutex_destroy(&table->forks[i++]);
 	pthread_mutex_destroy(&table->end_mutex);
 	pthread_mutex_destroy(&table->start_mutex);

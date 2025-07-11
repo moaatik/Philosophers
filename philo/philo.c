@@ -44,18 +44,19 @@ void	*philosopher_day(void *argement)
 	while (!get_start_dinner(philosopher->table))
 		usleep(1);
 	philosopher->last_meal_date = get_time();
+	if (philosopher->id % 2 == 0)
+		ft_usleep(1, philosopher);
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
 			return (NULL);
-		if (philosopher->id % 2 == 0)
-			ft_usleep(1, philosopher);
 		eating(philosopher);
 		if (philosopher->meals_eaten == philosopher->table->meals_limit)
 			return (philosopher->table->philos_done_eating++, NULL);
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time, philosopher);
 		safe_print(philosopher, "is thinking");
+		usleep(500);
 	}
 	return (NULL);
 }
