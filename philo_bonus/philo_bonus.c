@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/11 18:40:41 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/11 18:58:22 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,13 @@ void	*monitoring(t_table *table)
 	return (NULL);
 }
 
-void	wait_philos(pid_t *pids, int  index)
+void	wait_philos(pid_t *pids, int count)
 {
-	int	i;
+	int		i;
 
-	i = 0;
-	while (i < index)
-		waitpid(pids[i++], NULL, 0);
+	waitpid(-1, NULL, 0);
+	for (i = 0; i < count; i++)
+		kill(pids[i], SIGKILL);
 	free(pids);
 }
 
