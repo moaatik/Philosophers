@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/01 20:34:18 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 15:26:13 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,14 @@ void	*monitoring(void *argement)
 			return (NULL);
 		while (i < table->philos_number)
 		{
-			if (get_time() - table->philosophers[i].last_meal_date >= \
+			if (get_time() - table->philosophers[i].last_meal_date > \
 				table->time_to_die && table->philosophers[i].meals_eaten \
 				!= table->meals_limit)
 				return (set_end_dinner(table, 1), printf("%ld %d %s\n", \
 				get_time(), table->philosophers[i].id, "died"), NULL);
 			i++;
 		}
+		ft_usleep(100, &table->philosophers[0]);
 	}
 	return (NULL);
 }

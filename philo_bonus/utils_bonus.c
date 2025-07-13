@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/11 18:37:17 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 16:33:58 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,22 @@ void	clean_up(t_table *table)
 {
 	int		i;
 	char	*name;
+	char	*name1;
 
 	i = 0;
 	while (table->forks && i < table->philos_number)
 	{
-		name = ft_strjoin("/fork", ft_itoa(i));
+		name1 = ft_itoa(i);
+		name = ft_strjoin("/fork", name1);
 		sem_unlink(name);
 		sem_close(table->forks[i++]);
+		free(name1);
+		free(name);
 	}
-
-	sem_close(table->end_semaphore);
-	sem_close(table->print_semaphore);
-
 	sem_unlink("/end");
 	sem_unlink("/print");
-
+	sem_close(table->end_semaphore);
+	sem_close(table->print_semaphore);
 	free(table->forks);
 	free(table->philosophers);
 }
