@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 16:33:58 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 17:16:01 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ long	get_time(void)
 	return (current_time - start_time);
 }
 
-void	ft_usleep(long ms, t_philosopher *philosopher)
+void	ft_usleep(long ms)
 {
 	long	start;
 
 	start = get_time();
-	while (!get_end_dinner(philosopher->table) && (get_time() - start) < ms)
+	while ((get_time() - start) < ms)
 		usleep(100);
 }
 
@@ -78,10 +78,10 @@ void	clean_up(t_table *table)
 		free(name1);
 		free(name);
 	}
-	sem_unlink("/end");
-	sem_unlink("/print");
-	sem_close(table->end_semaphore);
 	sem_close(table->print_semaphore);
+	sem_unlink("/print");
+	sem_close(table->death_semaphore);
+    sem_unlink("/death_sem");
 	free(table->forks);
 	free(table->philosophers);
 }

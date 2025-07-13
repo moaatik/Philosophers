@@ -6,11 +6,35 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 16:31:37 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 19:06:29 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+void safe_print(t_philosopher *philosopher, char *msg)
+{
+    sem_wait(philosopher->table->print_semaphore);
+    printf("%ld %d %s\n", get_time(), philosopher->id, msg);
+    sem_post(philosopher->table->print_semaphore);
+}
+
+void *self_monitor(void *arg)
+{
+    t_philosopher *philo = (t_philosopher *)arg;
+
+    while (1)
+    {
+        if (get_time() - philo->last_meal_date > philo->table->time_to_die)
+        {
+            sem_wait(philo->table->print_semaphore);
+            printf("%ld %d died\n", get_time(), philo->id);
+            exit(1);
+        }
+        usleep(100);
+    }
+    return NULL;
+}
 
 void	eating(t_philosopher *philosopher)
 {
@@ -31,26 +55,9 @@ void	eating(t_philosopher *philosopher)
 	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
-	ft_usleep(philosopher->table->eat_time, philosopher);
+	ft_usleep(philosopher->table->eat_time);
 	sem_post(*philosopher->left_fork);
 	sem_post(*philosopher->right_fork);
-}
-
-void *self_monitor(void *arg)
-{
-	t_philosopher *philo = (t_philosopher *)arg;
-
-	while (!get_end_dinner(philo->table))
-	{
-		if (get_time() - philo->last_meal_date > philo->table->time_to_die)
-		{
-			safe_print(philo, "died");
-			set_end_dinner(philo->table, 1);
-			exit(1);
-		}
-		usleep(100);
-	}
-	return NULL;
 }
 
 void	*philosopher_day(t_philosopher *philosopher)
@@ -61,17 +68,18 @@ void	*philosopher_day(t_philosopher *philosopher)
 	pthread_detach(monitor_thread);
 	philosopher->last_meal_date = get_time();
 	if (philosopher->id % 2 == 0)
-		ft_usleep(1, philosopher);
+		ft_usleep(1);
 	while (1)
 	{
-		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
-			return (exit(0), NULL);
+		if (!philosopher->right_fork)
+			return (safe_print(philosopher, "has taken a fork"), \
+			ft_usleep(philosopher->table->time_to_die * 10), exit(0), NULL);
 		eating(philosopher);
 		if (philosopher->table->meals_limit != -1 && 
 			philosopher->meals_eaten >= philosopher->table->meals_limit)
 				exit(0);
 		safe_print(philosopher, "is sleeping");
-		ft_usleep(philosopher->table->sleep_time, philosopher);
+		ft_usleep(philosopher->table->sleep_time);
 		safe_print(philosopher, "is thinking");
 		usleep(500);
 	}
@@ -81,36 +89,41 @@ void	*philosopher_day(t_philosopher *philosopher)
 
 void	wait_philos(pid_t *pids, int count, t_table *table)
 {
-	int		i;
-	int		status;
-	int		finished_count;
+	int	i;
+	int	status;
+	int	finished_count;	
 
 	finished_count = 0;
 	if (table->meals_limit != -1)
 	{
 		while (finished_count < table->philos_number)
 		{
-			waitpid(-1, &status, 0);
-			if (WEXITSTATUS(status) == 0)
-				finished_count++;
-			else
-				break ;
+		    waitpid(-1, &status, 0);
+		    if (WEXITSTATUS(status) == 0)
+		        finished_count++;
+		    else
+		    {
+		        i = 0;
+		        while (i < count)
+		            kill(pids[i++], SIGKILL);
+		        break;
+		    }
 		}
 	}
 	else
 	{
-		status = 0;
-		while (!status)
+		while (1)
 		{
-			waitpid(-1, &status, 0);
-			status = WEXITSTATUS(status);
+		    waitpid(-1, &status, 0);
+		    if (WEXITSTATUS(status) != 0)
+		    {
+		        i = 0;
+		        while (i < count)
+		            kill(pids[i++], SIGKILL);
+		        break;
+		    }
 		}
 	}
-	set_end_dinner(table, 1);
-	usleep(1000);
-	i = 0;
-	while (i < count)
-		kill(pids[i++], SIGKILL);
 	free(pids);
 }
 

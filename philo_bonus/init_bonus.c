@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 16:18:57 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 17:15:22 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,17 +130,18 @@ int	init_semaphores(t_table *table)
 	table->forks = forks;
 
 	sem_unlink("/print");
-	sem_unlink("/end");
+	sem_unlink("/death_sem");
+
+    table->death_semaphore = sem_open("/death_sem", O_CREAT | O_EXCL, 0644, 0);
+    if (table->death_semaphore == SEM_FAILED)
+        return (1);
 
 	table->print_semaphore = sem_open("/print", O_CREAT | O_EXCL, 0644, 1);
-	table->end_semaphore = sem_open("/end", O_CREAT | O_EXCL, 0644, 1);
 
-	if (table->print_semaphore == SEM_FAILED
-		|| table->end_semaphore == SEM_FAILED)
+	if (table->print_semaphore == SEM_FAILED)
 		return (1);
 	return (0);
 }
-
 
 int	init_philosophers(t_table *table)
 {

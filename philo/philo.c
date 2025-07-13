@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 15:26:13 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 18:50:50 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	*philosopher_day(void *argement)
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
-			return (NULL);
+			return (safe_print(philosopher, "has taken a fork"), NULL);
 		eating(philosopher);
 		if (philosopher->meals_eaten == philosopher->table->meals_limit)
 			return (philosopher->table->philos_done_eating++, NULL);
@@ -81,7 +81,7 @@ void	*monitoring(void *argement)
 				get_time(), table->philosophers[i].id, "died"), NULL);
 			i++;
 		}
-		ft_usleep(100, &table->philosophers[0]);
+		ft_usleep(5, &table->philosophers[0]);
 	}
 	return (NULL);
 }

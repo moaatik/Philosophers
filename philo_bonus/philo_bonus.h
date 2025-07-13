@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 16:16:41 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 17:15:02 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,11 @@ typedef struct s_philosopher
 typedef struct s_table
 {
 	sem_t			**forks;
-	sem_t			*end_semaphore;
 	sem_t			*print_semaphore;
+	sem_t			*death_semaphore;
 	t_philosopher	*philosophers;
 	int				eat_time;
 	int				sleep_time;
-	int				end_dinner;
 	int				time_to_die;
 	int				meals_limit;
 	int				philos_number;
@@ -60,11 +59,6 @@ long	ft_atoi(const char *str, int *error);
 int		input(int ac, char **av, t_table *table);
 
 long	get_time(void);
-int		get_end_dinner(t_table *table);
-int		get_start_dinner(t_table *table);
-void	set_end_dinner(t_table *table, int value);
-void	set_start_dinner(t_table *table, int value);
-void	ft_usleep(long ms, t_philosopher *philosopher);
-void	safe_print(t_philosopher *philosopher, char *msg);
+void	ft_usleep(long ms);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/11 16:48:35 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/13 17:07:26 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 	table->meals_limit = -1;
 	if (ac == 6)
 		table->meals_limit = ft_atoi(av[5], &error);
-	table->end_dinner = 0;
 	table->philos_done_eating = 0;
 	table->philosophers = NULL;
 	return (0);
