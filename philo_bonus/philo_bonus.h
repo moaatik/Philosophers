@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 17:15:02 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/14 14:56:22 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,16 @@ typedef struct s_table
 	int				philos_done_eating;
 }	t_table;
 
-char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_itoa(int n);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 void	clean_up(t_table *table);
-int		init_semaphores(t_table *table);
 int		init_philosophers(t_table *table);
 long	ft_atoi(const char *str, int *error);
 int		input(int ac, char **av, t_table *table);
+void	safe_print(t_philosopher *philosopher, char *msg);
+void	wait_philos(pid_t *pids, int count, t_table *table);
+int		init_semaphores(t_table *table, char *name, char *name1, int i);
 
 long	get_time(void);
 void	ft_usleep(long ms);

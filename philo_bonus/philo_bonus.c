@@ -6,34 +6,28 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 19:06:29 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/14 14:51:09 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void safe_print(t_philosopher *philosopher, char *msg)
+void	*self_monitor(void *arg)
 {
-    sem_wait(philosopher->table->print_semaphore);
-    printf("%ld %d %s\n", get_time(), philosopher->id, msg);
-    sem_post(philosopher->table->print_semaphore);
-}
+	t_philosopher	*philo;
 
-void *self_monitor(void *arg)
-{
-    t_philosopher *philo = (t_philosopher *)arg;
-
-    while (1)
-    {
-        if (get_time() - philo->last_meal_date > philo->table->time_to_die)
-        {
-            sem_wait(philo->table->print_semaphore);
-            printf("%ld %d died\n", get_time(), philo->id);
-            exit(1);
-        }
-        usleep(100);
-    }
-    return NULL;
+	philo = (t_philosopher *)arg;
+	while (1)
+	{
+		if (get_time() - philo->last_meal_date > philo->table->time_to_die)
+		{
+			sem_wait(philo->table->print_semaphore);
+			printf("%ld %d died\n", get_time(), philo->id);
+			exit(1);
+		}
+		usleep(100);
+	}
+	return (NULL);
 }
 
 void	eating(t_philosopher *philosopher)
@@ -75,9 +69,9 @@ void	*philosopher_day(t_philosopher *philosopher)
 			return (safe_print(philosopher, "has taken a fork"), \
 			ft_usleep(philosopher->table->time_to_die * 10), exit(0), NULL);
 		eating(philosopher);
-		if (philosopher->table->meals_limit != -1 && 
-			philosopher->meals_eaten >= philosopher->table->meals_limit)
-				exit(0);
+		if (philosopher->table->meals_limit != -1
+			&& philosopher->meals_eaten >= philosopher->table->meals_limit)
+			exit(0);
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time);
 		safe_print(philosopher, "is thinking");
@@ -85,46 +79,6 @@ void	*philosopher_day(t_philosopher *philosopher)
 	}
 	exit(0);
 	return (NULL);
-}
-
-void	wait_philos(pid_t *pids, int count, t_table *table)
-{
-	int	i;
-	int	status;
-	int	finished_count;	
-
-	finished_count = 0;
-	if (table->meals_limit != -1)
-	{
-		while (finished_count < table->philos_number)
-		{
-		    waitpid(-1, &status, 0);
-		    if (WEXITSTATUS(status) == 0)
-		        finished_count++;
-		    else
-		    {
-		        i = 0;
-		        while (i < count)
-		            kill(pids[i++], SIGKILL);
-		        break;
-		    }
-		}
-	}
-	else
-	{
-		while (1)
-		{
-		    waitpid(-1, &status, 0);
-		    if (WEXITSTATUS(status) != 0)
-		    {
-		        i = 0;
-		        while (i < count)
-		            kill(pids[i++], SIGKILL);
-		        break;
-		    }
-		}
-	}
-	free(pids);
 }
 
 int	dinner_time(t_table *table)
@@ -156,7 +110,7 @@ int	main(int argc, char **argv)
 
 	if (input(argc, argv, &table))
 		return (1);
-	if (init_semaphores(&table) || init_philosophers(&table))
+	if (init_semaphores(&table, NULL, NULL, 0) || init_philosophers(&table))
 		return (clean_up(&table), 1);
 	dinner_time(&table);
 	clean_up(&table);

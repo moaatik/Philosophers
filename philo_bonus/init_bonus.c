@@ -6,115 +6,19 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 17:15:22 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/14 14:21:09 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static int	count(long i)
-{
-	int	count;
-
-	if (i == 0)
-		return (1);
-	count = 0;
-	while (i > 0)
-	{
-		i /= 10;
-		count++;
-	}
-	return (count);
-}
-
-char	*ft_itoa(int n)
-{
-	char	*ptr;
-	int		len;
-
-	len = count(n);
-	ptr = malloc(sizeof(char) * (len + 1));
-	if (!ptr)
-		return (NULL);
-	ptr[len] = 0;
-	len--;
-	while (len >= 0)
-	{
-		ptr[len] = (n % 10) + '0';
-		n /= 10;
-		len--;
-	}
-	return (ptr);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	size_t	i;
-	char	*ptr;
-
-	i = 0;
-	while (s1[i])
-		i++;
-	ptr = malloc(i + 1);
-	if (ptr == NULL)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	ptr[i] = '\0';
-	return (ptr);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	i;
-	size_t	j;
-	char	*ptr;
-
-	i = 0;
-	j = 0;
-	if (!s1 && !s2)
-		return (ft_strdup(""));
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
-	ptr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!ptr)
-		return (NULL);
-	while (s1[i])
-		ptr[j++] = s1[i++];
-	i = 0;
-	while (s2[i])
-		ptr[j++] = s2[i++];
-	ptr[j] = 0;
-	return (ptr);
-}
-
-int	init_semaphores(t_table *table)
+int	init_semaphores(t_table *table, char *name, char *name1, int i)
 {
 	sem_t	**forks;
-	char	*name;
-	char	*name1;
-	int		i;
 
 	forks = malloc(sizeof(sem_t *) * table->philos_number);
 	if (!forks)
 		return (1);
-	i = 0;
 	while (i < table->philos_number)
 	{
 		name1 = ft_itoa(i);
@@ -123,22 +27,16 @@ int	init_semaphores(t_table *table)
 		sem_unlink(name);
 		forks[i] = sem_open(name, O_CREAT | O_EXCL, 0644, 1);
 		free(name);
-		if (forks[i] == SEM_FAILED)
+		if (forks[i++] == SEM_FAILED)
 			return (1);
-		i++;
 	}
 	table->forks = forks;
-
 	sem_unlink("/print");
 	sem_unlink("/death_sem");
-
-    table->death_semaphore = sem_open("/death_sem", O_CREAT | O_EXCL, 0644, 0);
-    if (table->death_semaphore == SEM_FAILED)
-        return (1);
-
+	table->death_semaphore = sem_open("/death_sem", O_CREAT | O_EXCL, 0644, 0);
 	table->print_semaphore = sem_open("/print", O_CREAT | O_EXCL, 0644, 1);
-
-	if (table->print_semaphore == SEM_FAILED)
+	if (table->print_semaphore == SEM_FAILED \
+		|| table->death_semaphore == SEM_FAILED)
 		return (1);
 	return (0);
 }
