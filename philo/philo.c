@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/13 18:50:50 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/15 17:55:30 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	*monitoring(void *argement)
 			return (NULL);
 		while (i < table->philos_number)
 		{
-			if (get_time() - table->philosophers[i].last_meal_date > \
+			if (get_time() - table->philosophers[i].last_meal_date >= \
 				table->time_to_die && table->philosophers[i].meals_eaten \
 				!= table->meals_limit)
 				return (set_end_dinner(table, 1), printf("%ld %d %s\n", \
