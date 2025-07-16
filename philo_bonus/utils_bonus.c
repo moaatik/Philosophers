@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/14 14:48:34 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:25:47 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,26 +64,15 @@ void	ft_usleep(long ms)
 
 void	clean_up(t_table *table)
 {
-	int		i;
-	char	*name;
-	char	*name1;
-
-	i = 0;
-	while (table->forks && i < table->philos_number)
-	{
-		name1 = ft_itoa(i);
-		name = ft_strjoin("/fork", name1);
-		sem_unlink(name);
-		sem_close(table->forks[i++]);
-		free(name1);
-		free(name);
-	}
-	sem_close(table->print_semaphore);
+	clean_forks(table->forks, table->philos_number);
+	if (table->print_semaphore)
+		sem_close(table->print_semaphore);
 	sem_unlink("/print");
-	sem_close(table->death_semaphore);
+	if (table->death_semaphore)
+		sem_close(table->death_semaphore);
 	sem_unlink("/death_sem");
-	free(table->forks);
-	free(table->philosophers);
+	if (table->philosophers)
+		free(table->philosophers);
 }
 
 void	safe_print(t_philosopher *philosopher, char *msg)

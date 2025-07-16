@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/15 17:56:37 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 18:15:15 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,9 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 
-	if (input(argc, argv, &table))
+	if (input(argc, argv, &table) || init_semaphores(&table, NULL, NULL, 0))
 		return (1);
-	if (init_semaphores(&table, NULL, NULL, 0) || init_philosophers(&table))
+	if (init_philosophers(&table))
 		return (clean_up(&table), 1);
 	dinner_time(&table);
 	clean_up(&table);
