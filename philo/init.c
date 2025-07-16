@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/11 16:44:59 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:45:01 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	init_mutexes(t_table *table)
 	table->forks = forks;
 	if (pthread_mutex_init(&table->print_mutex, NULL) != 0
 		|| pthread_mutex_init(&table->end_mutex, NULL) != 0
-		|| pthread_mutex_init(&table->start_mutex, NULL) != 0)
+		|| pthread_mutex_init(&table->start_mutex, NULL) != 0
+		|| pthread_mutex_init(&table->done_eating_mutex, NULL) != 0)
 		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/11 16:33:26 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:43:45 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,21 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 	table->philos_done_eating = 0;
 	table->philosophers = NULL;
 	return (0);
+}
+
+void	set_done_eating(t_table *table)
+{
+	pthread_mutex_lock(&table->done_eating_mutex);
+	table->philos_done_eating++;
+	pthread_mutex_unlock(&table->done_eating_mutex);
+}
+
+int	get_done_eating(t_table *table)
+{
+	int	status;
+
+	pthread_mutex_lock(&table->done_eating_mutex);
+	status = table->philos_done_eating;
+	pthread_mutex_unlock(&table->done_eating_mutex);
+	return (status);
 }

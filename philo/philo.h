@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/01 20:35:15 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:44:08 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_table
 	pthread_mutex_t	end_mutex;
 	pthread_mutex_t	start_mutex;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	done_eating_mutex;
 	t_philosopher	*philosophers;
 	int				eat_time;
 	int				sleep_time;
@@ -57,6 +58,8 @@ int		input(int ac, char **av, t_table *table);
 
 long	get_time(void);
 int		get_end_dinner(t_table *table);
+void	set_done_eating(t_table *table);
+int		get_done_eating(t_table *table);
 int		get_start_dinner(t_table *table);
 void	join_threads(pthread_t	*threads, int i);
 void	set_end_dinner(t_table *table, int value);

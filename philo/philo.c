@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/15 17:55:30 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/16 15:43:40 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	*philosopher_day(void *argement)
 			return (safe_print(philosopher, "has taken a fork"), NULL);
 		eating(philosopher);
 		if (philosopher->meals_eaten == philosopher->table->meals_limit)
-			return (philosopher->table->philos_done_eating++, NULL);
+			return (set_done_eating(philosopher->table), NULL);
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time, philosopher);
 		safe_print(philosopher, "is thinking");
@@ -70,7 +70,7 @@ void	*monitoring(void *argement)
 	while (1)
 	{
 		i = 0;
-		if (table->philos_done_eating == table->philos_number)
+		if (get_done_eating(table) == table->philos_number)
 			return (NULL);
 		while (i < table->philos_number)
 		{
