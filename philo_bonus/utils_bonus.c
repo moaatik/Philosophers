@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:00:07 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 22:40:29 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ long	ft_atoi(const char *str, int *error)
 			return (*error = 1, result * sign);
 		i++;
 	}
+	while (str[i])
+		if (str[i++] != 32)
+			return (*error = 1, result * sign);
 	return (result * sign);
 }
 

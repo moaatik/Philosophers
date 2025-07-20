@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:03:07 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 22:34:00 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,21 @@ int	ft_is_digit(char *str)
 	return (0);
 }
 
+void	init_table(int ac, char **av, t_table *table)
+{
+	int	error;
+
+	table->philos_number = ft_atoi(av[1], &error);
+	table->time_to_die = ft_atoi(av[2], &error);
+	table->eat_time = ft_atoi(av[3], &error);
+	table->sleep_time = ft_atoi(av[4], &error);
+	table->meals_limit = -1;
+	if (ac == 6)
+		table->meals_limit = ft_atoi(av[5], &error);
+	table->philos_done_eating = 0;
+	table->philosophers = NULL;
+}
+
 int	input(int ac, char **av, t_table *table)
 {
 	int	error;
@@ -45,17 +60,11 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 	{
 		error = 0;
 		if (ft_atoi(av[i], &error) <= 0 || error || ft_is_digit(av[i]))
-			return (write(2, "Error\ninvalid argument\n", 23), 1);
+			return (write(2, "Error\nInvalid argument\n", 23), 1);
+		if (i == 1 && ft_atoi(av[i], &error) > 200)
+			return (write(2, "Error\nMax philosophers_number is 200\n", 37), 1);
 		i++;
 	}
-	table->philos_number = ft_atoi(av[1], &error);
-	table->time_to_die = ft_atoi(av[2], &error);
-	table->eat_time = ft_atoi(av[3], &error);
-	table->sleep_time = ft_atoi(av[4], &error);
-	table->meals_limit = -1;
-	if (ac == 6)
-		table->meals_limit = ft_atoi(av[5], &error);
-	table->philos_done_eating = 0;
-	table->philosophers = NULL;
+	init_table(ac, av, table);
 	return (0);
 }
