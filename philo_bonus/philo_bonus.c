@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/16 18:15:15 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 18:27:37 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*self_monitor(void *arg)
 	philo = (t_philosopher *)arg;
 	while (1)
 	{
-		if (get_time() - philo->last_meal_date >= philo->table->time_to_die)
+		if (get_time() - philo->last_meal_date > philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print_semaphore);
 			printf("%ld %d died\n", get_time(), philo->id);
