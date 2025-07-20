@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 19:28:26 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 22:00:24 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ typedef struct s_table	t_table;
 typedef struct s_philosopher
 {
 	t_table				*table;
-	sem_t				**left_fork;
-	sem_t				**right_fork;
 	int					id;
 	long long			last_meal_date;
 	int					think_time;
@@ -37,7 +35,7 @@ typedef struct s_philosopher
 
 typedef struct s_table
 {
-	sem_t			**forks;
+	sem_t			*forks;
 	sem_t			*print_semaphore;
 	t_philosopher	*philosophers;
 	int				eat_time;
@@ -48,16 +46,13 @@ typedef struct s_table
 	int				philos_done_eating;
 }	t_table;
 
-char	*ft_itoa(int n);
 long	ft_atoi(const char *str, int *error);
-char	*ft_strjoin(char const *s1, char const *s2);
 
 void	clean_up(t_table *table);
 int		init_philosophers(t_table *table);
-void	clean_forks(sem_t	**forks, int size);
 int		input(int ac, char **av, t_table *table);
 void	wait_philos(pid_t *pids, int count, t_table *table);
-int		init_semaphores(t_table *table, char *name, char *name1, int i);
+int		init_semaphores(t_table *table);
 
 long	get_time(void);
 void	ft_usleep(long ms);

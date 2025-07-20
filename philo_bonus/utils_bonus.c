@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 19:27:51 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 22:00:07 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,9 @@ void	ft_usleep(long ms)
 
 void	clean_up(t_table *table)
 {
-	clean_forks(table->forks, table->philos_number);
+	if (table->forks)
+		sem_close(table->forks);
+	sem_unlink("/print");
 	if (table->print_semaphore)
 		sem_close(table->print_semaphore);
 	sem_unlink("/print");

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 19:37:10 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 22:16:23 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,16 @@ void	*self_monitor(void *arg)
 
 void	eating(t_philosopher *philosopher)
 {
-	if (philosopher->id % 2 == 0)
-	{
-		sem_wait(*philosopher->right_fork);
-		safe_print(philosopher, "has taken a fork");
-		sem_wait(*philosopher->left_fork);
-		safe_print(philosopher, "has taken a fork");
-	}
-	else
-	{
-		sem_wait(*philosopher->left_fork);
-		safe_print(philosopher, "has taken a fork");
-		sem_wait(*philosopher->right_fork);
-		safe_print(philosopher, "has taken a fork");
-	}
+	sem_wait(philosopher->table->forks);
+	safe_print(philosopher, "has taken a fork");
+	sem_wait(philosopher->table->forks);
+	safe_print(philosopher, "has taken a fork");
 	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
 	ft_usleep(philosopher->table->eat_time);
-	sem_post(*philosopher->left_fork);
-	sem_post(*philosopher->right_fork);
+	sem_post(philosopher->table->forks);
+	sem_post(philosopher->table->forks);
 }
 
 void	*philosopher_day(t_philosopher *philosopher)
@@ -65,9 +55,6 @@ void	*philosopher_day(t_philosopher *philosopher)
 		ft_usleep(1);
 	while (1)
 	{
-		if (!philosopher->right_fork)
-			return (safe_print(philosopher, "has taken a fork"), \
-			ft_usleep(philosopher->table->time_to_die * 10), exit(0), NULL);
 		eating(philosopher);
 		if (philosopher->table->meals_limit != -1
 			&& philosopher->meals_eaten >= philosopher->table->meals_limit)
@@ -75,7 +62,6 @@ void	*philosopher_day(t_philosopher *philosopher)
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time);
 		safe_print(philosopher, "is thinking");
-		usleep(500);
 	}
 	exit(0);
 	return (NULL);
@@ -108,7 +94,7 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 
-	if (input(argc, argv, &table) || init_semaphores(&table, NULL, NULL, 0))
+	if (input(argc, argv, &table) || init_semaphores(&table))
 		return (1);
 	if (init_philosophers(&table))
 		return (clean_up(&table), 1);

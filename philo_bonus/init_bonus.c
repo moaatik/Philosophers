@@ -6,59 +6,19 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 19:31:07 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 21:59:17 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	clean_forks(sem_t	**forks, int size)
+int	init_semaphores(t_table *table)
 {
-	int		i;
-	char	*name;
-	char	*name1;
-
-	i = 0;
-	while (i < size)
-	{
-		name1 = ft_itoa(i);
-		if (!name1)
-			break ;
-		name = ft_strjoin("/fork", name1);
-		if (name)
-		{
-			sem_unlink(name);
-			sem_close(forks[i]);
-			free(name);
-		}
-		free(name1);
-		i++;
-	}
-	free(forks);
-}
-
-int	init_semaphores(t_table *table, char *name, char *name1, int i)
-{
-	sem_t	**forks;
-
-	forks = malloc(sizeof(sem_t *) * table->philos_number);
-	if (!forks)
-		return (1);
-	while (i < table->philos_number)
-	{
-		name1 = ft_itoa(i);
-		name = ft_strjoin("/fork", name1);
-		free(name1);
-		sem_unlink(name);
-		forks[i] = sem_open(name, O_CREAT, 0644, 1);
-		free(name);
-		if (forks[i++] == SEM_FAILED)
-			return (clean_forks(forks, i), 1);
-	}
-	table->forks = forks;
+	sem_unlink("forks");
+	table->forks = sem_open("forks", O_CREAT, 0644, table->philos_number);
 	sem_unlink("/print");
 	table->print_semaphore = sem_open("/print", O_CREAT, 0644, 1);
-	if (table->print_semaphore == SEM_FAILED)
+	if (table->print_semaphore == SEM_FAILED || table->forks == SEM_FAILED)
 		return (clean_up(table), 1);
 	return (0);
 }
@@ -79,14 +39,6 @@ int	init_philosophers(t_table *table)
 		philosophers[i].last_meal_date = 0;
 		philosophers[i].meals_eaten = 0;
 		philosophers[i].think_time = 0;
-		philosophers[i].left_fork = &table->forks[i];
-		if (table->philos_number < 2)
-			philosophers[i].right_fork = NULL;
-		else if (i == 0)
-			philosophers[i].right_fork = \
-			&table->forks[table->philos_number - 1];
-		else
-			philosophers[i].right_fork = &table->forks[i - 1];
 		philosophers[i++].table = table;
 	}
 	return (0);
