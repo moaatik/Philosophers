@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 18:01:01 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 19:19:58 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,10 @@
 
 void	eating(t_philosopher *philosopher)
 {
-	if (philosopher->id % 2 == 0)
-	{
-		pthread_mutex_lock(philosopher->right_fork);
-		safe_print(philosopher, "has taken a fork");
-		pthread_mutex_lock(philosopher->left_fork);
-		safe_print(philosopher, "has taken a fork");
-	}
-	else
-	{
-		pthread_mutex_lock(philosopher->left_fork);
-		safe_print(philosopher, "has taken a fork");
-		pthread_mutex_lock(philosopher->right_fork);
-		safe_print(philosopher, "has taken a fork");
-	}
+	pthread_mutex_lock(philosopher->right_fork);
+	safe_print(philosopher, "has taken a fork");
+	pthread_mutex_lock(philosopher->left_fork);
+	safe_print(philosopher, "has taken a fork");
 	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
@@ -42,8 +32,9 @@ void	*philosopher_day(void *argement)
 
 	philosopher = (t_philosopher *)argement;
 	while (!get_start_dinner(philosopher->table))
-		usleep(1);
+		usleep(10);
 	philosopher->last_meal_date = get_time();
+	printf("start[%ld][%d]\n", get_time() , philosopher->id);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(1, philosopher);
 	while (1)
@@ -56,7 +47,6 @@ void	*philosopher_day(void *argement)
 		safe_print(philosopher, "is sleeping");
 		ft_usleep(philosopher->table->sleep_time, philosopher);
 		safe_print(philosopher, "is thinking");
-		usleep(500);
 	}
 	return (NULL);
 }

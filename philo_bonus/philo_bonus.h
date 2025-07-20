@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/16 18:37:32 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 19:28:26 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_table
 {
 	sem_t			**forks;
 	sem_t			*print_semaphore;
-	sem_t			*death_semaphore;
 	t_philosopher	*philosophers;
 	int				eat_time;
 	int				sleep_time;

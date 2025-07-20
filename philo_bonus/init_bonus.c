@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/16 18:37:56 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 19:31:07 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,15 @@ int	init_semaphores(t_table *table, char *name, char *name1, int i)
 		name = ft_strjoin("/fork", name1);
 		free(name1);
 		sem_unlink(name);
-		forks[i] = sem_open(name, O_CREAT | O_EXCL, 0644, 1);
+		forks[i] = sem_open(name, O_CREAT, 0644, 1);
 		free(name);
 		if (forks[i++] == SEM_FAILED)
 			return (clean_forks(forks, i), 1);
 	}
 	table->forks = forks;
 	sem_unlink("/print");
-	sem_unlink("/death_sem");
-	table->death_semaphore = sem_open("/death_sem", O_CREAT | O_EXCL, 0644, 0);
-	table->print_semaphore = sem_open("/print", O_CREAT | O_EXCL, 0644, 1);
-	if (table->print_semaphore == SEM_FAILED \
-		|| table->death_semaphore == SEM_FAILED)
+	table->print_semaphore = sem_open("/print", O_CREAT, 0644, 1);
+	if (table->print_semaphore == SEM_FAILED)
 		return (clean_up(table), 1);
 	return (0);
 }

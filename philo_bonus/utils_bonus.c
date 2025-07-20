@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/16 18:25:47 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 19:27:51 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,6 @@ void	clean_up(t_table *table)
 	if (table->print_semaphore)
 		sem_close(table->print_semaphore);
 	sem_unlink("/print");
-	if (table->death_semaphore)
-		sem_close(table->death_semaphore);
-	sem_unlink("/death_sem");
 	if (table->philosophers)
 		free(table->philosophers);
 }
