@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 18:23:46 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/20 18:33:17 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	ft_is_digit(char *str)
 	if (!str)
 		return (0);
 	i = 0;
+	while (str[i] == 32)
+		i++;
 	if (str[i] == '+')
 		i++;
 	while (str[i])
