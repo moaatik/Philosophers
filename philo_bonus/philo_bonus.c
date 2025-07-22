@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:16:23 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/22 18:10:31 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ void	*self_monitor(void *arg)
 void	eating(t_philosopher *philosopher)
 {
 	sem_wait(philosopher->table->forks);
-	safe_print(philosopher, "has taken a fork");
+	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->table->forks);
-	safe_print(philosopher, "has taken a fork");
+	safe_print(philosopher, " has taken a fork\n");
 	philosopher->last_meal_date = get_time();
-	safe_print(philosopher, "is eating");
+	safe_print(philosopher, " is eating\n");
 	philosopher->meals_eaten++;
 	ft_usleep(philosopher->table->eat_time);
 	sem_post(philosopher->table->forks);
@@ -59,9 +59,9 @@ void	*philosopher_day(t_philosopher *philosopher)
 		if (philosopher->table->meals_limit != -1
 			&& philosopher->meals_eaten >= philosopher->table->meals_limit)
 			exit(0);
-		safe_print(philosopher, "is sleeping");
+		safe_print(philosopher, " is sleeping\n");
 		ft_usleep(philosopher->table->sleep_time);
-		safe_print(philosopher, "is thinking");
+		safe_print(philosopher, " is thinking\n");
 	}
 	exit(0);
 	return (NULL);

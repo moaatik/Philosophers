@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:40:29 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/22 19:15:54 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,20 @@ void	clean_up(t_table *table)
 
 void	safe_print(t_philosopher *philosopher, char *msg)
 {
+	char	*temp;
+	char	*temp1;
+	char	*temp2;
+	char	*temp3;
+
 	sem_wait(philosopher->table->print_semaphore);
-	printf("%ld %d %s\n", get_time(), philosopher->id, msg);
+	temp2 = ft_itoa(get_time());
+	temp3 = ft_itoa(philosopher->id);
+	temp = ft_strjoin_3(temp2, " ", temp3);
+	free(temp2);
+	free(temp3);
+	temp1 = ft_strjoin_3(temp, msg, NULL);
+	free(temp);
+	write(1, temp1, ft_strlen(temp1));
+	free(temp1);
 	sem_post(philosopher->table->print_semaphore);
 }

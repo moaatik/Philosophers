@@ -5,54 +5,108 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 14:14:49 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:03:13 by moaatik          ###   ########.fr       */
+/*   Created: 2025/07/22 19:15:17 by moaatik           #+#    #+#             */
+/*   Updated: 2025/07/22 19:21:19 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	handle_max_meals(pid_t *pids, int count, t_table *table, int i)
+char	*ft_itoa(int n)
 {
-	int	finished_count;
-	int	status;
+	char	*ptr;
+	int		len;
+	int		nbr;
 
-	finished_count = 0;
-	while (finished_count < table->philos_number)
+	nbr = n;
+	len = 0;
+	while (nbr > 0)
 	{
-		waitpid(-1, &status, 0);
-		if (WEXITSTATUS(status) == 0)
-			finished_count++;
-		else
-		{
-			i = 0;
-			while (i < count)
-				kill(pids[i++], SIGKILL);
-			return ;
-		}
+		nbr /= 10;
+		len++;
 	}
+	ptr = malloc(sizeof(char) * (len + 1));
+	if (!ptr)
+		return (NULL);
+	ptr[len] = 0;
+	len--;
+	while (len >= 0)
+	{
+		ptr[len] = (n % 10) + '0';
+		n /= 10;
+		len--;
+	}
+	return (ptr);
 }
 
-void	wait_philos(pid_t *pids, int count, t_table *table)
+int	ft_strlen(const char *s)
 {
 	int	i;
-	int	status;
 
-	if (table->meals_limit != -1)
-		handle_max_meals(pids, count, table, 0);
-	else
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	int		i;
+	char	*ptr;
+
+	i = 0;
+	while (s1[i])
+		i++;
+	ptr = malloc(i + 1);
+	if (ptr == NULL)
+		return (NULL);
+	i = 0;
+	while (s1[i])
 	{
-		while (1)
-		{
-			waitpid(-1, &status, 0);
-			if (WEXITSTATUS(status) != 0)
-			{
-				i = 0;
-				while (i < count)
-					kill(pids[i++], SIGKILL);
-				break ;
-			}
-		}
+		ptr[i] = s1[i];
+		i++;
 	}
-	free(pids);
+	ptr[i] = '\0';
+	return (ptr);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int		i;
+	int		j;
+	char	*ptr;
+
+	i = 0;
+	j = 0;
+	if (!s1 && !s2)
+		return (ft_strdup(""));
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
+	ptr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!ptr)
+		return (NULL);
+	while (s1[i])
+		ptr[j++] = s1[i++];
+	i = 0;
+	while (s2[i])
+		ptr[j++] = s2[i++];
+	ptr[j] = 0;
+	return (ptr);
+}
+
+char	*ft_strjoin_3(char *s1, char *s2, char *s3)
+{
+	char	*temp;
+	char	*result;
+
+	if (!s1 && !s2 && !s3)
+		return (ft_strdup(""));
+	temp = ft_strjoin(s1, s2);
+	if (!s3)
+		return (temp);
+	result = ft_strjoin(temp, s3);
+	free(temp);
+	return (result);
 }
