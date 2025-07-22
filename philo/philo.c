@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 21:50:19 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/22 22:08:27 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	*philosopher_day(void *argement)
 		usleep(10);
 	philosopher->last_meal_date = get_time();
 	if (philosopher->id % 2 == 0)
-		ft_usleep(1, philosopher);
+		ft_usleep(5, philosopher);
 	while (1)
 	{
 		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)

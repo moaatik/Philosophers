@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/22 18:10:31 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/22 22:12:36 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	*philosopher_day(t_philosopher *philosopher)
 	pthread_detach(monitor_thread);
 	philosopher->last_meal_date = get_time();
 	if (philosopher->id % 2 == 0)
-		ft_usleep(1);
+		ft_usleep(5);
 	while (1)
 	{
 		eating(philosopher);
