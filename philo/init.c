@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/16 15:45:01 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/27 18:09:38 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	init_mutexes(t_table *table)
 	table->forks = forks;
 	if (pthread_mutex_init(&table->print_mutex, NULL) != 0
 		|| pthread_mutex_init(&table->end_mutex, NULL) != 0
-		|| pthread_mutex_init(&table->start_mutex, NULL) != 0
+		|| pthread_mutex_init(&table->time_mutex, NULL) != 0
 		|| pthread_mutex_init(&table->done_eating_mutex, NULL) != 0)
 		return (1);
 	return (0);
@@ -39,28 +39,28 @@ int	init_mutexes(t_table *table)
 int	init_philosophers(t_table *table)
 {
 	int				i;
-	t_philosopher	*philosophers;
 
 	i = 0;
-	philosophers = malloc(sizeof(t_philosopher) * table->philos_number);
-	if (!philosophers)
+	table->philosophers = malloc(sizeof(t_philosopher) * table->philos_number);
+	if (!table->philosophers)
 		return (1);
-	table->philosophers = philosophers;
 	while (i < table->philos_number)
 	{
-		philosophers[i].id = i + 1;
-		philosophers[i].last_meal_date = 0;
-		philosophers[i].meals_eaten = 0;
-		philosophers[i].think_time = 0;
-		philosophers[i].left_fork = &table->forks[i];
+		table->philosophers[i].id = i + 1;
+		table->philosophers[i].last_meal_date = 0;
+		table->philosophers[i].meals_eaten = 0;
+		table->philosophers[i].think_time = 0;
+		table->philosophers[i].left_fork = &table->forks[i];
 		if (table->philos_number < 2)
-			philosophers[i].right_fork = NULL;
+			table->philosophers[i].right_fork = NULL;
 		else if (i == 0)
-			philosophers[i].right_fork = \
+			table->philosophers[i].right_fork = \
 			&table->forks[table->philos_number - 1];
 		else
-			philosophers[i].right_fork = &table->forks[i - 1];
-		philosophers[i++].table = table;
+			table->philosophers[i].right_fork = &table->forks[i - 1];
+		if (pthread_mutex_init(&table->philosophers[i].meals_mutex, NULL) != 0)
+			return (1);
+		table->philosophers[i++].table = table;
 	}
 	return (0);
 }

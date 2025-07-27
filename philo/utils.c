@@ -6,11 +6,19 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:41:20 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/27 18:51:57 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+long	check_spaces(const char *str, int *error, long result, int i)
+{
+	while (str[i])
+		if (str[i++] != 32)
+			return (*error = 1, result);
+	return (result);
+}
 
 long	ft_atoi(const char *str, int *error)
 {
@@ -37,31 +45,16 @@ long	ft_atoi(const char *str, int *error)
 			return (*error = 1, result * sign);
 		i++;
 	}
-	while (str[i])
-		if (str[i++] != 32)
-			return (*error = 1, result * sign);
-	return (result * sign);
-}
-
-long	get_time(void)
-{
-	static long		start_time;
-	struct timeval	time;
-	long			current_time;
-
-	gettimeofday(&time, NULL);
-	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	if (start_time == 0)
-		start_time = current_time;
-	return (current_time - start_time);
+	return (check_spaces(str, error, result * sign, i));
 }
 
 void	ft_usleep(long ms, t_philosopher *philosopher)
 {
 	long	start;
 
-	start = get_time();
-	while (!get_end_dinner(philosopher->table) && (get_time() - start) < ms)
+	start = get_time(philosopher->table);
+	while (!get_end_dinner(philosopher->table)
+		&& (get_time(philosopher->table) - start) < ms)
 		usleep(100);
 }
 
@@ -85,8 +78,11 @@ void	clean_up(t_table *table)
 	i = 0;
 	while (table->forks && i < table->philos_number)
 		pthread_mutex_destroy(&table->forks[i++]);
+	i = 0;
+	while (table->philosophers && i < table->philos_number)
+		pthread_mutex_destroy(&table->philosophers[i++].meals_mutex);
 	pthread_mutex_destroy(&table->end_mutex);
-	pthread_mutex_destroy(&table->start_mutex);
+	pthread_mutex_destroy(&table->time_mutex);
 	pthread_mutex_destroy(&table->print_mutex);
 	pthread_mutex_destroy(&table->done_eating_mutex);
 	free(table->forks);

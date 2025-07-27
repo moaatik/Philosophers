@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/22 22:08:27 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/27 18:44:32 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ void	eating(t_philosopher *philosopher)
 	safe_print(philosopher, "has taken a fork");
 	pthread_mutex_lock(philosopher->left_fork);
 	safe_print(philosopher, "has taken a fork");
-	philosopher->last_meal_date = get_time();
 	safe_print(philosopher, "is eating");
+	pthread_mutex_lock(&philosopher->meals_mutex);
+	philosopher->last_meal_date = get_time(philosopher->table);
 	philosopher->meals_eaten++;
+	pthread_mutex_unlock(&philosopher->meals_mutex);
 	ft_usleep(philosopher->table->eat_time, philosopher);
 	pthread_mutex_unlock(philosopher->left_fork);
 	pthread_mutex_unlock(philosopher->right_fork);
@@ -31,9 +33,9 @@ void	*philosopher_day(void *argement)
 	t_philosopher	*philosopher;
 
 	philosopher = (t_philosopher *)argement;
-	while (!get_start_dinner(philosopher->table))
-		usleep(10);
-	philosopher->last_meal_date = get_time();
+	pthread_mutex_lock(&philosopher->meals_mutex);
+	philosopher->last_meal_date = get_time(philosopher->table);
+	pthread_mutex_unlock(&philosopher->meals_mutex);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(5, philosopher);
 	while (1)
@@ -63,16 +65,14 @@ void	*monitoring(void *argement)
 			return (NULL);
 		while (i < table->philos_number)
 		{
-			if (get_time() - table->philosophers[i].last_meal_date > \
-				table->time_to_die && table->philosophers[i].meals_eaten \
-				!= table->meals_limit)
-				return (pthread_mutex_lock(&table->print_mutex), \
-					set_end_dinner(table, 1), printf("%ld %d %s\n", \
-					get_time(), table->philosophers[i].id, "died"), \
-					pthread_mutex_unlock(&table->print_mutex), NULL);
+			pthread_mutex_lock(&table->philosophers[i].meals_mutex);
+			if (get_time(table) - table->philosophers[i].last_meal_date
+				> table->time_to_die)
+				return (death(table, i));
+			pthread_mutex_unlock(&table->philosophers[i].meals_mutex);
 			i++;
 		}
-		ft_usleep(5, &table->philosophers[0]);
+		usleep(10);
 	}
 	return (NULL);
 }
@@ -86,7 +86,6 @@ int	dinner_time(t_table *table)
 	threads = malloc(sizeof(pthread_t) * (table->philos_number + 1));
 	if (!threads)
 		return (1);
-	set_start_dinner(table, 0);
 	while (i < table->philos_number)
 	{
 		if (pthread_create(&threads[i], NULL, philosopher_day, \
@@ -96,7 +95,6 @@ int	dinner_time(t_table *table)
 	}
 	if (pthread_create(&threads[i], NULL, monitoring, table))
 		return (join_threads(threads, i), 1);
-	set_start_dinner(table, 1);
 	join_threads(threads, i);
 	return (0);
 }
