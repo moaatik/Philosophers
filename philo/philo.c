@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 18:44:32 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/27 19:22:14 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ void	*philosopher_day(void *argement)
 	pthread_mutex_unlock(&philosopher->meals_mutex);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(5, philosopher);
+	if (!philosopher->right_fork)
+		return (safe_print(philosopher, "has taken a fork"), NULL);
 	while (1)
 	{
-		if (get_end_dinner(philosopher->table) || !philosopher->right_fork)
-			return (safe_print(philosopher, "has taken a fork"), NULL);
+		if (get_end_dinner(philosopher->table))
+			return (NULL);
 		eating(philosopher);
 		if (philosopher->meals_eaten == philosopher->table->meals_limit)
 			return (set_done_eating(philosopher->table), NULL);
