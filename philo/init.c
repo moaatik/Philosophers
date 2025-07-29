@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 18:09:38 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/29 22:05:40 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	init_philosophers(t_table *table)
 		table->philosophers[i].last_meal_date = 0;
 		table->philosophers[i].meals_eaten = 0;
 		table->philosophers[i].think_time = 0;
+		table->philosophers[i].is_eating = 0;
 		table->philosophers[i].left_fork = &table->forks[i];
 		if (table->philos_number < 2)
 			table->philosophers[i].right_fork = NULL;
@@ -59,6 +60,8 @@ int	init_philosophers(t_table *table)
 		else
 			table->philosophers[i].right_fork = &table->forks[i - 1];
 		if (pthread_mutex_init(&table->philosophers[i].meals_mutex, NULL) != 0)
+			return (1);
+		if (pthread_mutex_init(&table->philosophers[i].is_eating_mutex, NULL) != 0)
 			return (1);
 		table->philosophers[i++].table = table;
 	}

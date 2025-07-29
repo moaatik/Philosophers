@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 19:22:14 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/29 22:39:39 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,18 @@ void	eating(t_philosopher *philosopher)
 	safe_print(philosopher, "has taken a fork");
 	pthread_mutex_lock(philosopher->left_fork);
 	safe_print(philosopher, "has taken a fork");
+	pthread_mutex_lock(&philosopher->is_eating_mutex);
+	philosopher->is_eating = 1;
+	pthread_mutex_unlock(&philosopher->is_eating_mutex);
 	safe_print(philosopher, "is eating");
 	pthread_mutex_lock(&philosopher->meals_mutex);
 	philosopher->last_meal_date = get_time(philosopher->table);
 	philosopher->meals_eaten++;
 	pthread_mutex_unlock(&philosopher->meals_mutex);
 	ft_usleep(philosopher->table->eat_time, philosopher);
+	pthread_mutex_lock(&philosopher->is_eating_mutex);
+	philosopher->is_eating = 0;
+	pthread_mutex_unlock(&philosopher->is_eating_mutex);
 	pthread_mutex_unlock(philosopher->left_fork);
 	pthread_mutex_unlock(philosopher->right_fork);
 }
@@ -58,6 +64,7 @@ void	*monitoring(void *argement)
 {
 	t_table	*table;
 	int		i;
+	int		is_eating;
 
 	table = (t_table *)argement;
 	while (1)
@@ -67,9 +74,12 @@ void	*monitoring(void *argement)
 			return (NULL);
 		while (i < table->philos_number)
 		{
+			pthread_mutex_lock(&table->philosophers[i].is_eating_mutex);
+			is_eating = table->philosophers[i].is_eating;
+			pthread_mutex_unlock(&table->philosophers[i].is_eating_mutex);
 			pthread_mutex_lock(&table->philosophers[i].meals_mutex);
-			if (get_time(table) - table->philosophers[i].last_meal_date
-				> table->time_to_die)
+			if (!is_eating && get_time(table) - table->philosophers[i].last_meal_date
+				>= table->time_to_die)
 				return (death(table, i));
 			pthread_mutex_unlock(&table->philosophers[i].meals_mutex);
 			i++;

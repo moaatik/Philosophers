@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/20 22:36:19 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/29 22:22:34 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ int	ft_is_digit(char *str)
 	return (0);
 }
 
+int	get_usleep_time(t_table *table)
+{
+	float	a;
+	float	b;
+	float	result;
+
+
+	a = 3.7878787878788;
+	b = 42.424242424242;
+	result = (table->philos_number * a) + b;
+	return ((int)result);
+}
+
 void	init_table(int ac, char **av, t_table *table)
 {
 	int	error;
@@ -46,6 +59,7 @@ void	init_table(int ac, char **av, t_table *table)
 	table->end_dinner = 0;
 	table->philos_done_eating = 0;
 	table->philosophers = NULL;
+	table->usleep_time = get_usleep_time(table);
 }
 
 int	input(int ac, char **av, t_table *table)

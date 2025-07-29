@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 18:51:57 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/29 22:34:18 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	ft_usleep(long ms, t_philosopher *philosopher)
 	start = get_time(philosopher->table);
 	while (!get_end_dinner(philosopher->table)
 		&& (get_time(philosopher->table) - start) < ms)
-		usleep(100);
+		usleep(philosopher->table->usleep_time);
 }
 
 void	join_threads(pthread_t	*threads, int i)
@@ -80,7 +80,10 @@ void	clean_up(t_table *table)
 		pthread_mutex_destroy(&table->forks[i++]);
 	i = 0;
 	while (table->philosophers && i < table->philos_number)
-		pthread_mutex_destroy(&table->philosophers[i++].meals_mutex);
+	{
+		pthread_mutex_destroy(&table->philosophers[i].meals_mutex);
+		pthread_mutex_destroy(&table->philosophers[i++].is_eating_mutex);
+	}
 	pthread_mutex_destroy(&table->end_mutex);
 	pthread_mutex_destroy(&table->time_mutex);
 	pthread_mutex_destroy(&table->print_mutex);

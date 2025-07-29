@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 18:44:58 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/29 22:05:27 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ typedef struct s_philosopher
 	long long			last_meal_date;
 	int					think_time;
 	int					meals_eaten;
+	int					is_eating;
+	pthread_mutex_t		is_eating_mutex;
 }	t_philosopher;
 
 typedef struct s_table
@@ -47,6 +49,7 @@ typedef struct s_table
 	int				time_to_die;
 	int				meals_limit;
 	int				philos_number;
+	int				usleep_time;
 	int				philos_done_eating;
 }	t_table;
 
