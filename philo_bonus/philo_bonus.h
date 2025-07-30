@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/22 19:19:45 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/30 21:09:30 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_table	t_table;
 typedef struct s_philosopher
 {
 	t_table				*table;
+	sem_t				*meal_semaphore;
 	int					id;
 	long long			last_meal_date;
 	int					think_time;

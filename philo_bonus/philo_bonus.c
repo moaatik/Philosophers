@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/22 22:12:36 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/30 21:32:02 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,15 @@
 void	*self_monitor(void *arg)
 {
 	t_philosopher	*philo;
+	long long		last_meal;
 
 	philo = (t_philosopher *)arg;
 	while (1)
 	{
-		if (get_time() - philo->last_meal_date > philo->table->time_to_die)
+		sem_wait(philo->meal_semaphore);
+		last_meal = philo->last_meal_date;
+		sem_post(philo->meal_semaphore);
+		if (get_time() - last_meal > philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print_semaphore);
 			printf("%ld %d died\n", get_time(), philo->id);
@@ -36,7 +40,9 @@ void	eating(t_philosopher *philosopher)
 	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->table->forks);
 	safe_print(philosopher, " has taken a fork\n");
+	sem_wait(philosopher->meal_semaphore);
 	philosopher->last_meal_date = get_time();
+	sem_post(philosopher->meal_semaphore);
 	safe_print(philosopher, " is eating\n");
 	philosopher->meals_eaten++;
 	ft_usleep(philosopher->table->eat_time);
@@ -50,7 +56,9 @@ void	*philosopher_day(t_philosopher *philosopher)
 
 	pthread_create(&monitor_thread, NULL, &self_monitor, philosopher);
 	pthread_detach(monitor_thread);
+	sem_wait(philosopher->meal_semaphore);
 	philosopher->last_meal_date = get_time();
+	sem_post(philosopher->meal_semaphore);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(5);
 	while (1)

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/22 19:15:54 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/30 22:38:49 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,31 @@ void	ft_usleep(long ms)
 
 void	clean_up(t_table *table)
 {
+	char	*temp;
+	char	*name;
+	int		i;
+
+	i = 0;
 	if (table->forks)
 		sem_close(table->forks);
 	sem_unlink("/print");
 	if (table->print_semaphore)
 		sem_close(table->print_semaphore);
 	sem_unlink("/print");
+	while (table->philosophers && i < table->philos_number)
+	{
+		temp = ft_itoa(table->philosophers[i].id);
+		if (!temp)
+			return ;
+		name = ft_strjoin_3("meal_", temp, NULL);
+		if (!name)
+			return (free(temp));
+		sem_close(table->philosophers[i].meal_semaphore);
+		sem_unlink(name);
+		free(temp);
+		free(name);
+		i++;
+	}
 	if (table->philosophers)
 		free(table->philosophers);
 }
@@ -86,12 +105,20 @@ void	safe_print(t_philosopher *philosopher, char *msg)
 
 	sem_wait(philosopher->table->print_semaphore);
 	temp2 = ft_itoa(get_time());
+	if (!temp2)
+		return ((void)sem_post(philosopher->table->print_semaphore));
 	temp3 = ft_itoa(philosopher->id);
+	if (!temp3)
+		return (sem_post(philosopher->table->print_semaphore), free(temp2));
 	temp = ft_strjoin_3(temp2, " ", temp3);
 	free(temp2);
 	free(temp3);
+	if (!temp)
+		return ((void)sem_post(philosopher->table->print_semaphore));
 	temp1 = ft_strjoin_3(temp, msg, NULL);
 	free(temp);
+	if (!temp1)
+		return ((void)sem_post(philosopher->table->print_semaphore));
 	write(1, temp1, ft_strlen(temp1));
 	free(temp1);
 	sem_post(philosopher->table->print_semaphore);

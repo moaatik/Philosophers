@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/29 22:22:34 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/30 22:41:05 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,8 @@ time_to_die eat_time sleep_time max_meals(optional)\n", 101), 1);
 	while (av[i])
 	{
 		error = 0;
-		if (ft_atoi(av[i], &error) <= 0 || error || ft_is_digit(av[i]))
+		if (ft_atoi(av[i], &error) < 0 || error || ft_is_digit(av[i]))
 			return (write(2, "Error\nInvalid argument\n", 23), 1);
-		if (i == 1 && ft_atoi(av[i], &error) > 200)
-			return (write(2, "Error\nMax philosophers_number is 200\n", 37), 1);
 		i++;
 	}
 	init_table(ac, av, table);
