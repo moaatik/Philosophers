@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 09:34:57 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 10:45:43 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,18 @@
 void	*self_monitor(void *arg)
 {
 	t_philosopher	*philo;
-	long long		last_meal;
 
 	philo = (t_philosopher *)arg;
 	while (1)
 	{
 		sem_wait(philo->meal_semaphore);
-		last_meal = philo->last_meal_date;
-		sem_post(philo->meal_semaphore);
-		if (get_time() - last_meal > philo->table->time_to_die)
+		if (!philo->is_eating && get_time() - philo->last_meal_date > philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print_semaphore);
 			printf("%ld %d died\n", get_time(), philo->id);
 			exit(1);
 		}
+		sem_post(philo->meal_semaphore);
 		usleep(philo->table->usleep_time);
 	}
 	return (NULL);
@@ -45,12 +43,16 @@ void	eating(t_philosopher *philosopher)
 	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->meal_semaphore);
 	philosopher->last_meal_date = get_time();
+	philosopher->is_eating = 1;
 	sem_post(philosopher->meal_semaphore);
 	safe_print(philosopher, " is eating\n");
 	philosopher->meals_eaten++;
 	ft_usleep(philosopher->table->eat_time, philosopher->table);
 	sem_post(philosopher->table->forks);
 	sem_post(philosopher->table->forks);
+	sem_wait(philosopher->meal_semaphore);
+	philosopher->is_eating = 0;
+	sem_post(philosopher->meal_semaphore);
 }
 
 void	*philosopher_day(t_philosopher *philosopher)

@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/29 22:05:40 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 10:12:08 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	init_philosophers(t_table *table)
 		table->philosophers[i].id = i + 1;
 		table->philosophers[i].last_meal_date = 0;
 		table->philosophers[i].meals_eaten = 0;
-		table->philosophers[i].think_time = 0;
 		table->philosophers[i].is_eating = 0;
 		table->philosophers[i].left_fork = &table->forks[i];
 		if (table->philos_number < 2)
