@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/30 21:32:02 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 06:56:07 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ void	*self_monitor(void *arg)
 
 void	eating(t_philosopher *philosopher)
 {
+	if (philosopher->table->meals_limit != -1
+		&& philosopher->meals_eaten >= philosopher->table->meals_limit)
+			return ;
 	sem_wait(philosopher->table->forks);
 	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->table->forks);
