@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 07:38:28 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 08:11:59 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,17 @@ void	eating(t_philosopher *philosopher)
 	pthread_mutex_unlock(philosopher->right_fork);
 }
 
+void	sleeping(t_philosopher *philosopher)
+{
+	int	sleep_time;
+
+	safe_print(philosopher, "is sleeping");
+	sleep_time = philosopher->table->sleep_time;
+	if (!sleep_time)
+		sleep_time = 1;
+	ft_usleep(sleep_time, philosopher);
+}
+
 void	*philosopher_day(void *argement)
 {
 	t_philosopher	*philosopher;
@@ -57,8 +68,7 @@ void	*philosopher_day(void *argement)
 		if (philosopher->table->meals_limit != -1
 			&& philosopher->meals_eaten >= philosopher->table->meals_limit)
 			return (set_done_eating(philosopher->table), NULL);
-		safe_print(philosopher, "is sleeping");
-		ft_usleep(philosopher->table->sleep_time, philosopher);
+		sleeping(philosopher);
 		safe_print(philosopher, "is thinking");
 	}
 	return (NULL);
