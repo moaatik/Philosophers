@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 06:56:07 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 09:34:57 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	*self_monitor(void *arg)
 			printf("%ld %d died\n", get_time(), philo->id);
 			exit(1);
 		}
-		usleep(100);
+		usleep(philo->table->usleep_time);
 	}
 	return (NULL);
 }
@@ -48,7 +48,7 @@ void	eating(t_philosopher *philosopher)
 	sem_post(philosopher->meal_semaphore);
 	safe_print(philosopher, " is eating\n");
 	philosopher->meals_eaten++;
-	ft_usleep(philosopher->table->eat_time);
+	ft_usleep(philosopher->table->eat_time, philosopher->table);
 	sem_post(philosopher->table->forks);
 	sem_post(philosopher->table->forks);
 }
@@ -63,7 +63,7 @@ void	*philosopher_day(t_philosopher *philosopher)
 	philosopher->last_meal_date = get_time();
 	sem_post(philosopher->meal_semaphore);
 	if (philosopher->id % 2 == 0)
-		ft_usleep(5);
+		ft_usleep(5, philosopher->table);
 	while (1)
 	{
 		eating(philosopher);
@@ -71,7 +71,7 @@ void	*philosopher_day(t_philosopher *philosopher)
 			&& philosopher->meals_eaten >= philosopher->table->meals_limit)
 			exit(0);
 		safe_print(philosopher, " is sleeping\n");
-		ft_usleep(philosopher->table->sleep_time);
+		ft_usleep(philosopher->table->sleep_time, philosopher->table);
 		safe_print(philosopher, " is thinking\n");
 	}
 	exit(0);

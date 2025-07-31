@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/30 21:24:50 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 09:26:44 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	init_semaphores(t_table *table)
 {
-	sem_unlink("forks");
-	table->forks = sem_open("forks", O_CREAT, 0644, table->philos_number);
+	sem_unlink("/forks");
+	table->forks = sem_open("/forks", O_CREAT, 0644, table->philos_number);
 	sem_unlink("/print");
 	table->print_semaphore = sem_open("/print", O_CREAT, 0644, 1);
 	if (table->print_semaphore == SEM_FAILED || table->forks == SEM_FAILED)
@@ -31,7 +31,7 @@ int	open_meal_semaphore(t_philosopher *philosopher)
 	temp = ft_itoa(philosopher->id);
 	if (!temp)
 		return (1);
-	name = ft_strjoin_3("meal_", temp, NULL);
+	name = ft_strjoin_3("/meal_", temp, NULL);
 	if (!name)
 		return (free(temp), 1);
 	sem_unlink(name);

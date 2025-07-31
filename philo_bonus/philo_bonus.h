@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/30 21:09:30 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 09:32:39 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_table
 	int				time_to_die;
 	int				meals_limit;
 	int				philos_number;
+	int				usleep_time;
 	int				philos_done_eating;
 }	t_table;
 
@@ -59,7 +60,7 @@ void	wait_philos(pid_t *pids, int count, t_table *table);
 int		init_semaphores(t_table *table);
 
 long	get_time(void);
-void	ft_usleep(long ms);
+void	ft_usleep(long ms, t_table *table);
 void	safe_print(t_philosopher *philosopher, char *msg);
 
 #endif
