@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:00:54 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/27 18:52:09 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 08:50:20 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	*death(t_table *table, int i)
 {
-	pthread_mutex_unlock(&table->philosophers[i].meals_mutex);
 	pthread_mutex_lock(&table->print_mutex);
 	set_end_dinner(table, 1);
 	printf("%ld %d %s\n", get_time(table), table->philosophers[i].id, "died");
 	pthread_mutex_unlock(&table->print_mutex);
+	pthread_mutex_unlock(&table->philosophers[i].meals_mutex);
 	return (NULL);
 }
 

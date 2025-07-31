@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 08:11:59 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/07/31 08:55:32 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ void	eating(t_philosopher *philosopher)
 	pthread_mutex_lock(&philosopher->is_eating_mutex);
 	philosopher->is_eating = 1;
 	pthread_mutex_unlock(&philosopher->is_eating_mutex);
-	safe_print(philosopher, "is eating");
 	pthread_mutex_lock(&philosopher->meals_mutex);
 	philosopher->last_meal_date = get_time(philosopher->table);
+	safe_print(philosopher, "is eating");
 	philosopher->meals_eaten++;
 	pthread_mutex_unlock(&philosopher->meals_mutex);
 	ft_usleep(philosopher->table->eat_time, philosopher);
