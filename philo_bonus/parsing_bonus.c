@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/01 08:25:34 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 09:46:47 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	init_table(int ac, char **av, t_table *table)
 	table->philos_done_eating = 0;
 	table->philosophers = NULL;
 	table->usleep_time = get_usleep_time(table);
+	table->start_time = 0;
 }
 
 int	input(int ac, char **av, t_table *table)

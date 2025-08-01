@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/01 08:26:17 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 10:56:10 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void	*self_monitor(void *arg)
 	while (1)
 	{
 		sem_wait(philo->meal_semaphore);
-		if (!philo->is_eating && get_time() - \
+		if (!philo->is_eating && get_time(philo->table) - \
 			philo->last_meal_date >= philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print_semaphore);
-			printf("%ld %d died\n", get_time(), philo->id);
+			printf("%ld %d died\n", get_time(philo->table), philo->id);
 			exit(1);
 		}
 		sem_post(philo->meal_semaphore);
@@ -43,7 +43,7 @@ void	eating(t_philosopher *philosopher)
 	sem_wait(philosopher->table->forks);
 	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->meal_semaphore);
-	philosopher->last_meal_date = get_time();
+	philosopher->last_meal_date = get_time(philosopher->table);
 	philosopher->is_eating = 1;
 	sem_post(philosopher->meal_semaphore);
 	safe_print(philosopher, " is eating\n");
@@ -63,7 +63,7 @@ void	*philosopher_day(t_philosopher *philosopher)
 	pthread_create(&monitor_thread, NULL, &self_monitor, philosopher);
 	pthread_detach(monitor_thread);
 	sem_wait(philosopher->meal_semaphore);
-	philosopher->last_meal_date = get_time();
+	philosopher->last_meal_date = get_time(philosopher->table);
 	sem_post(philosopher->meal_semaphore);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(5, philosopher->table);
@@ -90,12 +90,12 @@ int	dinner_time(t_table *table)
 	pids = malloc(sizeof(pid_t) * table->philos_number + 1);
 	if (!pids)
 		return (1);
+	table->start_time = get_time(table);
 	while (index < table->philos_number)
 	{
-		table->philosophers[index].id = index + 1;
 		pids[index] = fork();
 		if (pids[index] < 0)
-			return (free(pids), 1);
+			return (wait_philos(pids, index, table), 1);
 		if (pids[index] == 0)
 			philosopher_day(&table->philosophers[index]);
 		index++;

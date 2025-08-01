@@ -6,31 +6,28 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/01 08:36:03 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 09:44:59 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-long	get_time(void)
+long	get_time(t_table *table)
 {
-	static long		start_time;
 	struct timeval	time;
 	long			current_time;
 
 	gettimeofday(&time, NULL);
 	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	if (start_time == 0)
-		start_time = current_time;
-	return (current_time - start_time);
+	return (current_time - table->start_time);
 }
 
 void	ft_usleep(long ms, t_table *table)
 {
 	long	start;
 
-	start = get_time();
-	while ((get_time() - start) < ms)
+	start = get_time(table);
+	while ((get_time(table) - start) < ms)
 		usleep(table->usleep_time);
 }
 
@@ -78,7 +75,7 @@ void	safe_print(t_philosopher *philosopher, char *msg)
 	char	*temp3;
 
 	sem_wait(philosopher->table->print_semaphore);
-	temp2 = ft_itoa(get_time());
+	temp2 = ft_itoa(get_time(philosopher->table));
 	if (!temp2)
 		return ((void)sem_post(philosopher->table->print_semaphore));
 	temp3 = ft_itoa(philosopher->id);
