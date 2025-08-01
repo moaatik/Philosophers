@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/30 22:41:05 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:22:49 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,36 +30,6 @@ int	ft_is_digit(char *str)
 		i++;
 	}
 	return (0);
-}
-
-int	get_usleep_time(t_table *table)
-{
-	float	a;
-	float	b;
-	float	result;
-
-
-	a = 3.7878787878788;
-	b = 42.424242424242;
-	result = (table->philos_number * a) + b;
-	return ((int)result);
-}
-
-void	init_table(int ac, char **av, t_table *table)
-{
-	int	error;
-
-	table->philos_number = ft_atoi(av[1], &error);
-	table->time_to_die = ft_atoi(av[2], &error);
-	table->eat_time = ft_atoi(av[3], &error);
-	table->sleep_time = ft_atoi(av[4], &error);
-	table->meals_limit = -1;
-	if (ac == 6)
-		table->meals_limit = ft_atoi(av[5], &error);
-	table->end_dinner = 0;
-	table->philos_done_eating = 0;
-	table->philosophers = NULL;
-	table->usleep_time = get_usleep_time(table);
 }
 
 int	input(int ac, char **av, t_table *table)
@@ -97,4 +67,15 @@ int	get_done_eating(t_table *table)
 	status = table->philos_done_eating;
 	pthread_mutex_unlock(&table->done_eating_mutex);
 	return (status);
+}
+
+void	sleeping(t_philosopher *philosopher)
+{
+	int	sleep_time;
+
+	safe_print(philosopher, "is sleeping");
+	sleep_time = philosopher->table->sleep_time;
+	if (!sleep_time)
+		sleep_time = 1;
+	ft_usleep(sleep_time, philosopher);
 }

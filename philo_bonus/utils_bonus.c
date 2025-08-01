@@ -6,42 +6,11 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 09:32:32 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:36:03 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-long	ft_atoi(const char *str, int *error)
-{
-	int		i;
-	int		sign;
-	long	result;
-
-	i = 0;
-	sign = 1;
-	*error = 0;
-	result = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + (str[i] - '0');
-		if (result * sign > 2147483647 || result * sign < -2147483648)
-			return (*error = 1, result * sign);
-		i++;
-	}
-	while (str[i])
-		if (str[i++] != 32)
-			return (*error = 1, result * sign);
-	return (result * sign);
-}
 
 long	get_time(void)
 {
@@ -65,10 +34,26 @@ void	ft_usleep(long ms, t_table *table)
 		usleep(table->usleep_time);
 }
 
-void	clean_up(t_table *table)
+int	clean_meal_semaphore(t_table *table, int i)
 {
 	char	*temp;
 	char	*name;
+
+	temp = ft_itoa(table->philosophers[i].id);
+	if (!temp)
+		return (1);
+	name = ft_strjoin_3("/meal_", temp, NULL);
+	if (!name)
+		return (free(temp), 1);
+	sem_close(table->philosophers[i].meal_semaphore);
+	sem_unlink(name);
+	free(temp);
+	free(name);
+	return (0);
+}
+
+void	clean_up(t_table *table)
+{
 	int		i;
 
 	i = 0;
@@ -79,19 +64,8 @@ void	clean_up(t_table *table)
 		sem_close(table->print_semaphore);
 	sem_unlink("/print");
 	while (table->philosophers && i < table->philos_number)
-	{
-		temp = ft_itoa(table->philosophers[i].id);
-		if (!temp)
-			return ;
-		name = ft_strjoin_3("/meal_", temp, NULL);
-		if (!name)
-			return (free(temp));
-		sem_close(table->philosophers[i].meal_semaphore);
-		sem_unlink(name);
-		free(temp);
-		free(name);
-		i++;
-	}
+		if (clean_meal_semaphore(table, i++))
+			break ;
 	if (table->philosophers)
 		free(table->philosophers);
 }

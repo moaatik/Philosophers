@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:25:21 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 09:31:06 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:25:34 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	get_usleep_time(t_table *table)
 	float	a;
 	float	b;
 	float	result;
-
 
 	a = 3.7878787878788;
 	b = 42.424242424242;

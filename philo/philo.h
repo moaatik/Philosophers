@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:03:31 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 10:12:18 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:23:14 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,14 @@ int		init_mutexes(t_table *table);
 int		init_philosophers(t_table *table);
 long	ft_atoi(const char *str, int *error);
 int		input(int ac, char **av, t_table *table);
+void	init_table(int ac, char **av, t_table *table);
 
 long	get_time(t_table *table);
 void	*death(t_table *table, int i);
 int		get_end_dinner(t_table *table);
 void	set_done_eating(t_table *table);
 int		get_done_eating(t_table *table);
+void	sleeping(t_philosopher *philosopher);
 void	join_threads(pthread_t	*threads, int i);
 void	set_end_dinner(t_table *table, int value);
 void	ft_usleep(long ms, t_philosopher *philosopher);

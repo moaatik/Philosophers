@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 08:55:32 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:22:44 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	eating(t_philosopher *philosopher)
 {
 	if (philosopher->table->meals_limit != -1
 		&& philosopher->meals_eaten >= philosopher->table->meals_limit)
-			return ;
+		return ;
 	pthread_mutex_lock(philosopher->right_fork);
 	safe_print(philosopher, "has taken a fork");
 	pthread_mutex_lock(philosopher->left_fork);
@@ -35,17 +35,6 @@ void	eating(t_philosopher *philosopher)
 	pthread_mutex_unlock(&philosopher->is_eating_mutex);
 	pthread_mutex_unlock(philosopher->left_fork);
 	pthread_mutex_unlock(philosopher->right_fork);
-}
-
-void	sleeping(t_philosopher *philosopher)
-{
-	int	sleep_time;
-
-	safe_print(philosopher, "is sleeping");
-	sleep_time = philosopher->table->sleep_time;
-	if (!sleep_time)
-		sleep_time = 1;
-	ft_usleep(sleep_time, philosopher);
 }
 
 void	*philosopher_day(void *argement)
@@ -92,8 +81,8 @@ void	*monitoring(void *argement)
 			is_eating = table->philosophers[i].is_eating;
 			pthread_mutex_unlock(&table->philosophers[i].is_eating_mutex);
 			pthread_mutex_lock(&table->philosophers[i].meals_mutex);
-			if (!is_eating && get_time(table) - table->philosophers[i].last_meal_date
-				>= table->time_to_die)
+			if (!is_eating && get_time(table) - \
+				table->philosophers[i].last_meal_date >= table->time_to_die)
 				return (death(table, i));
 			pthread_mutex_unlock(&table->philosophers[i].meals_mutex);
 			i++;

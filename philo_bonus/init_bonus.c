@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 15:18:06 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 10:13:27 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:25:22 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	open_meal_semaphore(t_philosopher *philosopher)
 	free(temp);
 	free(name);
 	if (philosopher->meal_semaphore == SEM_FAILED)
-			return (1);
+		return (1);
 	return (0);
 }
 

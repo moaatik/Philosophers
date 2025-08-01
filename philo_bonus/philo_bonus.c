@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/31 10:45:43 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/01 08:26:17 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	*self_monitor(void *arg)
 	while (1)
 	{
 		sem_wait(philo->meal_semaphore);
-		if (!philo->is_eating && get_time() - philo->last_meal_date > philo->table->time_to_die)
+		if (!philo->is_eating && get_time() - \
+			philo->last_meal_date >= philo->table->time_to_die)
 		{
 			sem_wait(philo->table->print_semaphore);
 			printf("%ld %d died\n", get_time(), philo->id);
@@ -36,7 +37,7 @@ void	eating(t_philosopher *philosopher)
 {
 	if (philosopher->table->meals_limit != -1
 		&& philosopher->meals_eaten >= philosopher->table->meals_limit)
-			return ;
+		return ;
 	sem_wait(philosopher->table->forks);
 	safe_print(philosopher, " has taken a fork\n");
 	sem_wait(philosopher->table->forks);
