@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/01 10:56:10 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/02 07:36:14 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	dinner_time(t_table *table)
 	{
 		pids[index] = fork();
 		if (pids[index] < 0)
-			return (wait_philos(pids, index, table), 1);
+			return (kill_prev_philos(pids, index), 1);
 		if (pids[index] == 0)
 			philosopher_day(&table->philosophers[index]);
 		index++;

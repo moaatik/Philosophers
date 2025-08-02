@@ -6,54 +6,50 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:14:49 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/01 11:02:34 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/02 07:51:49 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	handle_max_meals(pid_t *pids, int count, t_table *table, int i)
-{
-	int	finished_count;
-	int	status;
-
-	finished_count = 0;
-	while (finished_count < table->philos_number)
-	{
-		waitpid(-1, &status, 0);
-		if (WEXITSTATUS(status) == 0)
-			finished_count++;
-		else
-		{
-			i = 0;
-			while (i < count)
-				kill(pids[i++], SIGTERM);
-			return ;
-		}
-	}
-}
-
 void	wait_philos(pid_t *pids, int count, t_table *table)
 {
 	int	i;
 	int	status;
+	int	finished_count;
 
-	if (table->meals_limit != -1)
-		handle_max_meals(pids, count, table, 0);
-	else
+	finished_count = 0;
+	while (1)
 	{
-		while (1)
+		if (finished_count >= table->philos_number)
+			break ;
+		waitpid(-1, &status, 0);
+		if (WEXITSTATUS(status) != 0)
 		{
-			waitpid(-1, &status, 0);
-			if (WEXITSTATUS(status) != 0)
-			{
-				i = 0;
-				while (i < count)
-					kill(pids[i++], SIGTERM);
-				break ;
-			}
+			i = 0;
+			while (i < count)
+				kill(pids[i++], SIGTERM);
+			i = 0;
+			while (i < count)
+				waitpid(pids[i++], NULL, 0);
+			break ;
 		}
+		else
+			finished_count++;
 	}
+	free(pids);
+}
+
+void	kill_prev_philos(pid_t *pids, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+		kill(pids[i++], SIGTERM);
+	i = 0;
+	while (i < count)
+		waitpid(pids[i++], NULL, 0);
 	free(pids);
 }
 
