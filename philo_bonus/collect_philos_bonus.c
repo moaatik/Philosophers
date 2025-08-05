@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 14:14:49 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/02 07:51:49 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/05 10:22:36 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	wait_philos(pid_t *pids, int count, t_table *table)
 		{
 			i = 0;
 			while (i < count)
-				kill(pids[i++], SIGTERM);
+				kill(pids[i++], SIGKILL);
 			i = 0;
 			while (i < count)
 				waitpid(pids[i++], NULL, 0);
@@ -46,7 +46,7 @@ void	kill_prev_philos(pid_t *pids, int count)
 
 	i = 0;
 	while (i < count)
-		kill(pids[i++], SIGTERM);
+		kill(pids[i++], SIGKILL);
 	i = 0;
 	while (i < count)
 		waitpid(pids[i++], NULL, 0);
