@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:02:02 by moaatik           #+#    #+#             */
-/*   Updated: 2025/08/02 07:36:14 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/05 08:59:23 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	dinner_time(t_table *table)
 	pid_t		*pids;
 
 	index = 0;
-	pids = malloc(sizeof(pid_t) * table->philos_number + 1);
+	pids = malloc(sizeof(pid_t) * table->philos_number);
 	if (!pids)
 		return (1);
 	table->start_time = get_time(table);
