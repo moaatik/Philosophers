@@ -6,7 +6,7 @@
 /*   By: moaatik <moaatik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:54:56 by moaatik           #+#    #+#             */
-/*   Updated: 2025/07/29 22:34:18 by moaatik          ###   ########.fr       */
+/*   Updated: 2025/08/05 10:55:13 by moaatik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	clean_up(t_table *table)
 	pthread_mutex_destroy(&table->time_mutex);
 	pthread_mutex_destroy(&table->print_mutex);
 	pthread_mutex_destroy(&table->done_eating_mutex);
-	free(table->forks);
-	free(table->philosophers);
+	if (table->forks)
+		free(table->forks);
+	if (table->philosophers)
+		free(table->philosophers);
 }
