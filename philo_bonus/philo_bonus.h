@@ -18,9 +18,10 @@
 # include <semaphore.h>
 # include <signal.h>
 # include <pthread.h>
-# include <fcntl.h> 
+# include <fcntl.h>
 # include <stdio.h>
 # include <sys/time.h>
+#include <sys/wait.h>
 
 typedef struct s_table	t_table;
 
